@@ -68,7 +68,11 @@
         </div>
         <div id="Others" class="col-4">
             <h5>@Model.Name</h5>
-            <p>@($"{Model.Price} USD")</p>
+            @if(Model.Discount > 0){
+            <p class="card-text">@($"Discount: {Model.Discount} %")</p>
+            }
+            <p class="card-text">@($"{Model.Price - (Model.Price * Model.Discount) / 100} USD")</p>
+
             <div class="form-group">
                 <label asp-for="MeasureId" class="control-label">Select Measure</label>
                 <select asp-for="MeasureId" class="form-control" id="productMeasureDropdown">

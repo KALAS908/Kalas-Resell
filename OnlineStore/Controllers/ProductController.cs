@@ -93,8 +93,28 @@ namespace OnlineStore.WebApp.Controllers
             }
 
             ProductService.AddProductMeasure(model);
-            return RedirectToAction("ProductsView","Product");
-        }   
-        
+            return RedirectToAction("ProductsView", "Product");
+        }
+
+
+        [HttpGet]
+        public IActionResult EditProduct(Guid id)
+        {
+            var model = ProductService.GetEditProductDto(id);
+            return View("EditProduct", model);
+        }
+
+        [HttpPost]
+        public IActionResult EditProduct(EditProductDto model)
+        {
+            if (model == null)
+            {
+                return View("Error_NotFound");
+            }
+
+            ProductService.EditProduct(model);
+            return RedirectToAction("ProductsView", "Product");
+        }
+
     }
 }
