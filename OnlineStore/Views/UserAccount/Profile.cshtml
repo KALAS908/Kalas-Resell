@@ -1,0 +1,29 @@
+﻿@model OnlineStore.BusinessLogic.Implementation.Account.Models.ProfileModel
+
+@inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
+
+@{
+    ViewData["Title"] = "Profile Page";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <h1>@ViewData["Title"]</h1>
+
+    <div>
+        <p><strong>Username:</strong> @Model.UserName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>First Name:</strong> @Model.FirstName</p>
+        <p><strong>Last Name:</strong> @Model.LastName</p>
+        <p><strong>Country:</strong> @Model.Country</p>
+    </div>
+
+    <div>
+        <a href="@Url.Action("EditProfile", "UserAccount", new { id = CurrentUser.Id })" class="btn btn-primary">Edit Profile</a>
+    </div>
+</body>
+</html>

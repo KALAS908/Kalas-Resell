@@ -1,0 +1,24 @@
+﻿@model IEnumerable<OnlineStore.Common.DTOs.ProductDto>
+@inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
+<div class="container">
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <img src="data:image/png;base64,@Convert.ToBase64String(product.CoverImage)" style="max-width: 300px;" />
+                        <h5 class="card-title">@product.Name</h5
+                        <p class="card-text">@($"{product.Price} USD")</p>
+                        <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="btn btn-primary">Show Product</a>
+                       @if (CurrentUser.RoleId == "1") {
+                             <a href="@Url.Action("AddProductMeasure", "Product", new { id = product.Id })" class="btn btn-primary">Add Measure</a>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

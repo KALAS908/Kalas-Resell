@@ -1,0 +1,100 @@
+﻿@model OnlineStore.BusinessLogic.Implementation.Account.Models.ProfileModel
+
+@{
+    ViewData["Title"] = "Profile Page";
+}
+
+@*<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <h1>@ViewData["Title"]</h1>
+
+    <form method="post">
+        <div>
+            <label for="UserName">Username:</label>
+            <input type="text" id="UserName" name="UserName" value="@Model.UserName"/>
+        </div>
+        <div>
+            <label for="Email">Email:</label>
+            <input type="email" id="Email" name="Email" value="@Model.Email" />
+        </div>
+        <div>
+            <label for="FirstName">First Name:</label>
+            <input type="text" id="FirstName" name="FirstName" value="@Model.FirstName" />
+        </div>
+        <div>
+            <label for="LastName">Last Name:</label>
+            <input type="text" id="LastName" name="LastName" value="@Model.LastName" />
+        </div>
+        <div class="form-group">
+            <label asp-for="CountryId" class="control-label">Country name</label>
+            <select asp-for="CountryId" class="form-control" id="countryDropdown">
+                <option value=@Model.CountryId selected> @Model.Country</option>
+            </select>
+            <span asp-validation-for="CountryId" class="text-danger"></span>
+        </div>
+        <div>
+            <button type="submit">Save Changes</button>
+        </div>
+    </form>
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/User/EditCountryList.js"></script>
+<script>
+    var countryId  = @Model.CountryId;
+    new EditCountryList(countryId);
+</script>*@
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditProfile" asp-controller="UserAccount">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CountryId" class="control-label">Country name</label>
+                <select asp-for="CountryId" class="form-control" id="countryDropdown">
+                </select>
+                <span asp-validation-for="CountryId" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/User/EditCountryList.js"></script>
+<script src="~/js/User/CountryList.js"></script>
+<script>
+   
+        new CountryList();
+        
+</script>
