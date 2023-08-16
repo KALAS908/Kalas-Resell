@@ -120,10 +120,10 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult ShoppingCart(Guid id)
+        public IActionResult ShoppingCart()
         {
 
-            var model = UserAccountService.GetUserShoppingCart(id);
+            var model = UserAccountService.GetUserShoppingCart();
             return View(model);
         }
 

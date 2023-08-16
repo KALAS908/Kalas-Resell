@@ -136,7 +136,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
                 UserName = user.UserName,
                 Country = UnitOfWork.Countries.Get().FirstOrDefault(c => c.Id == user.CountryId).Name,
                 CountryId = (int)user.CountryId
-               
+
             };
 
             return model;
@@ -144,10 +144,10 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
 
         public void UpdateUserProfile(ProfileModel model)
         {
-          
-          
-           var  modelcopy = new ProfileModel
-           {
+
+
+            var modelcopy = new ProfileModel
+            {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
@@ -172,12 +172,30 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             UnitOfWork.SaveChanges();
         }
 
-        public string GetUserShoppingCart(Guid id)
+        public List<ShoppingCartDto> GetUserShoppingCart()
         {
-            var products = UnitOfWork.ShoppingCarts.Get().Where(s => s.UserId == id).ToList();
-            return "";
-        }
-    }
+            var currentUser = CurrentUser;
+            var ShoppingCartProducts = UnitOfWork.ShoppingCarts.Get().Where(s => s.UserId.ToString() == currentUser.Id).ToList();
+            List<ShoppingCartDto> ShoppingCartDto = new List<ShoppingCartDto>();
+            foreach (var item in ShoppingCartProducts)
+            {
+                var product = UnitOfWork.Products.Get().FirstOrDefault(p => p.Id == item.ProductId);
+                var images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).ToList();
+                var productDto = new ShoppingCartDto
+                {
+                    ProductId = item.ProductId,
+                    ProductName = product.Name,
+                    ProductPrice = (double)product.Price ,
+                    Quantity = (int)item.Quantity,
+                    ProductImage = images.Select(x => x.Picture).FirstOrDefault(),
+                    ProductSize = UnitOfWork.Measures.Get().FirstOrDefault(x => x.Id == item.MeasureId).MeasureValue,
+                    ProductDiscount = (int)product.Discount
 
-    
+                };
+                ShoppingCartDto.Add(productDto);
+            }
+            return ShoppingCartDto;
+        }
+
+    }
 }

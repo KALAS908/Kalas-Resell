@@ -16,9 +16,11 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
     public class ProductService : BaseService
     {
         private readonly CreateProductValidation validationRules;
+        private readonly CurrentUserDto currentUser;
         public ProductService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
         {
             validationRules = new CreateProductValidation(serviceDependencies.UnitOfWork);
+            currentUser = serviceDependencies.CurrentUser;
         }
 
         public List<ProductDto> GetAllProducts()
@@ -199,6 +201,32 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             UnitOfWork.Products.Update(product);
             UnitOfWork.SaveChanges();
 
+        }
+
+        public void AddProductToCart(Guid productId, int measureId)
+        {
+            
+            var productInShoppingCart = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
+            if (productInShoppingCart != null)
+            {
+                productInShoppingCart.Quantity += 1;
+                UnitOfWork.ShoppingCarts.Update(productInShoppingCart);
+                UnitOfWork.SaveChanges();
+
+            }
+            else
+            {
+                var product = new ShoppingCart
+                {
+                    UserId = new Guid(currentUser.Id),
+                    ProductId = productId,
+                    MeasureId = measureId,
+                    Quantity = 1
+                };
+
+                UnitOfWork.ShoppingCarts.Insert(product);
+                UnitOfWork.SaveChanges();
+            }
         }
     }
 }

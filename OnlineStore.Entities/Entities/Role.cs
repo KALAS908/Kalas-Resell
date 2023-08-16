@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace OnlineStore.Entities.Entities
 {
     public partial class Role : IEntity
-    { 
+    {
         public Role()
         {
             User = new HashSet<User>();

@@ -17,6 +17,25 @@
     #Description {
         text-align: left;
     }
+
+    /* Stilizare pentru notificare */
+    .notification {
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        transition: opacity 0.5s;
+    }
+
+        .notification.hidden {
+            opacity: 0;
+        }
+
 </style>
 <input type="hidden" id="productIdHidden" name="productId" value="@Model.Id" />
 <div class="container text-center">
@@ -68,8 +87,9 @@
         </div>
         <div id="Others" class="col-4">
             <h5>@Model.Name</h5>
-            @if(Model.Discount > 0){
-            <p class="card-text">@($"Discount: {Model.Discount} %")</p>
+            @if (Model.Discount > 0)
+            {
+                <p class="card-text">@($"Discount: {Model.Discount} %")</p>
             }
             <p class="card-text">@($"{Model.Price - (Model.Price * Model.Discount) / 100} USD")</p>
 
@@ -79,8 +99,7 @@
                 </select>
                 <span asp-validation-for="MeasureId" class="text-danger"></span>
             </div>
-
-            <a href="@Url.Action("AddProductToCart", "Product", new { id = Model.Id })" class="btn btn-primary">Add to Cart</a>
+            <button onclick="AddToCart()" class="btn btn-primary">Add to cart </button>
             <a href="@Url.Action("ProductDetails", "Product", new { id = Model.Id })" class="btn btn-primary"><i class="bi bi-box2-heart"></i></a>
         </div>
     </div>
@@ -88,8 +107,10 @@
         <h3>Description </h3>
         <p>@Model.Description</p>
     </div>
+    <div id="notification" class="notification hidden">Produsul a fost adăugat în coș!</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/js/ProductDetails/ProductMeasuresList.js"></script>
 <script type="text/javascript">new ProductMeasuresList()</script>
+<script src="~/js/ProductDetails/AddToCart.js"></script>

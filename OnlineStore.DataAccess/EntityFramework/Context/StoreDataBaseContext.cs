@@ -227,18 +227,24 @@ namespace OnlineStore.DataAccess.EntityFramework.Context
 
             modelBuilder.Entity<ShoppingCart>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.ProductId })
-                    .HasName("PK__Shopping__DCC800208A746491");
+                entity.HasKey(e => new { e.UserId, e.ProductId, e.MeasureId })
+                    .HasName("PK__Shopping__5D4456F07B9AFBB4");
+
+                entity.HasOne(d => d.Measure)
+                    .WithMany(p => p.ShoppingCart)
+                    .HasForeignKey(d => d.MeasureId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ShoppingC__Measu__1CBC4616");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.ShoppingCart)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__ShoppingC__Produ__5BE2A6F2");
+                    .HasConstraintName("FK__ShoppingC__Produ__1BC821DD");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ShoppingCart)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__ShoppingC__UserI__5AEE82B9");
+                    .HasConstraintName("FK__ShoppingC__UserI__1AD3FDA4");
             });
 
             modelBuilder.Entity<Type>(entity =>

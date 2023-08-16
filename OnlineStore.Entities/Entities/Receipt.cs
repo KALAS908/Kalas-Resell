@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace OnlineStore.Entities.Entities
 {
     public partial class Receipt : IEntity
-    {
+    { 
         public Receipt()
         {
             OrderedItems = new HashSet<OrderedItems>();

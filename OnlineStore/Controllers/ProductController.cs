@@ -116,5 +116,12 @@ namespace OnlineStore.WebApp.Controllers
             return RedirectToAction("ProductsView", "Product");
         }
 
+        [HttpPost]
+        public IActionResult AddProductToCart(Guid productId, int measureId)
+        {
+            ProductService.AddProductToCart(productId, measureId);
+            return Ok("Product added to cart successfully.");
+        }
+
     }
 }
