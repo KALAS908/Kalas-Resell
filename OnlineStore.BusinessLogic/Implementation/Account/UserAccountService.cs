@@ -182,18 +182,34 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             {
                 var product = UnitOfWork.Products.Get().FirstOrDefault(p => p.Id == item.ProductId);
                 var images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).ToList();
-                var productDto = new ShoppingCartDto
+                var availableQuantity = UnitOfWork.ProductMeasures.Get().FirstOrDefault(x => x.ProductId == product.Id && x.MeasureId == item.MeasureId).Quantity;
+                if (availableQuantity == 0)
                 {
-                    ProductId = item.ProductId,
-                    ProductName = product.Name,
-                    ProductPrice = (double)product.Price,
-                    Quantity = (int)item.Quantity,
-                    ProductImage = images.Select(x => x.Picture).FirstOrDefault(),
-                    ProductSize = UnitOfWork.Measures.Get().FirstOrDefault(x => x.Id == item.MeasureId).MeasureValue,
-                    ProductDiscount = (int)product.Discount
+                    UnitOfWork.ShoppingCarts.Delete(item);
+                    UnitOfWork.SaveChanges();
+                }
+                else
+                {
+                    if(availableQuantity < item.Quantity)
+                    {
+                        item.Quantity = availableQuantity;
+                        UnitOfWork.ShoppingCarts.Update(item);
+                        UnitOfWork.SaveChanges();
+                    }
+                    var productDto = new ShoppingCartDto
+                    {
+                        ProductId = item.ProductId,
+                        ProductName = product.Name,
+                        ProductPrice = (double)product.Price,
+                        Quantity = (int)item.Quantity,
+                        ProductImage = images.Select(x => x.Picture).FirstOrDefault(),
+                        ProductSize = UnitOfWork.Measures.Get().FirstOrDefault(x => x.Id == item.MeasureId).MeasureValue,
+                        ProductDiscount = (int)product.Discount
 
-                };
-                ShoppingCartDto.Add(productDto);
+                    };
+                    ShoppingCartDto.Add(productDto);
+
+                }
             }
             return ShoppingCartDto;
         }

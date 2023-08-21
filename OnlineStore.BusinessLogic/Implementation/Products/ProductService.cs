@@ -204,7 +204,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
 
             product.Name = model.Name;
             product.Description = model.Description;
-            product.Price = (double?)(decimal)model.Price;
+            product.Price = model.Price;
             product.Discount = model.Discount;
 
             UnitOfWork.Products.Update(product);

@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace OnlineStore.BusinessLogic.Implementation.NewFolder
 {
-    public class ShoppinCartService : BaseService
+    public class ShoppingCartService : BaseService
     {
         private readonly CurrentUserDto currentUser;
        
-        public ShoppinCartService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
+        public ShoppingCartService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
         {
             currentUser = serviceDependencies.CurrentUser;
         }
@@ -83,6 +83,27 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
             var tem = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
             var SubTotal = tem.Quantity * tem.Product.Price;
             return $"{tem.Quantity} {SubTotal}";
+        }
+
+
+        public void RemoveFromDataBase(Guid productId, string measure, int quantity)
+        {
+
+            var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
+            if(measureId == null)
+            {
+                throw new Exception("Measure not found");
+            }
+            var productMeasure = UnitOfWork.ProductMeasures.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId);
+            if(productMeasure == null)
+            {
+                throw new Exception("Product not found");
+            }
+           
+            productMeasure.Quantity -= quantity;
+            UnitOfWork.ProductMeasures.Update(productMeasure);
+            UnitOfWork.SaveChanges();
+
         }
     }
 }

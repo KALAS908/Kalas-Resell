@@ -51,7 +51,7 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
             services.AddScoped<TypeService>();
             services.AddScoped<MeasureService>();
             services.AddScoped<ColorService>();
-            services.AddScoped<ShoppinCartService>();
+            services.AddScoped<ShoppingCartService>();
             return services;
         }
 

@@ -2,39 +2,28 @@
 @inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
 
 <link rel="stylesheet" href="~/css/ShoppingCart/ShoppingCart.css" />
-
-<h2>Shopping Cart</h2>
-
-
+<h1> Order Confirmation</h1>
 
 <table>
     <tr>
-       
+
         <th>Product Name</th>
         <th>Price</th>
         <th>Quantity</th>
         <th>Measure</th>
         <th>Subtotal</th>
-
-
     </tr>
-   
     @foreach (var item in Model)
     {
         <tr id="item-@item.ProductId-@item.ProductSize">
-           
+
             <td><a href="@Url.Action("ProductDetails", "Product", new { id = item.ProductId })" style="text-decoration: none ; color: black">@item.ProductName</a></td>
             <td>@(item.ProductPrice - (item.ProductPrice * item.ProductDiscount / 100)) USD </td>
             <td>
                 @item.Quantity
-                <button class="decrease-quantity" onclick="DecreaseQuantity('@item.ProductId', '@item.ProductSize')">-</button>
-                <button class="increase-quantity" onclick="IncreaseQuantity('@item.ProductId', '@item.ProductSize')">+</button>
             </td>
             <td>@item.ProductSize</td>
             <td>@((item.ProductPrice - (item.ProductPrice * item.ProductDiscount / 100)) * item.Quantity) USD</td>
-            <td class="remove-cell">
-                <button class="remove-button" onclick="RemoveItem('@item.ProductId','@item.ProductSize')">Remove</button>
-            </td>
 
         </tr>
 
@@ -44,13 +33,4 @@
 <div class="total-price">
     <h3>Total Price: @Model.Sum(x => (x.ProductPrice - (x.ProductPrice * x.ProductDiscount / 100)) * x.Quantity)</h3>
 </div>
-
-<div class="checkout-button">
-    <a asp-action="CheckOut" asp-controller="ShoppingCart" type="button">Checkout</a>
-</div>
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="~/js/ShoppingCart/RemoveItem.js"></script>
-<script src="~/js/ShoppingCart/IncreaseQuantity.js"></script>
-<script src="~/js/ShoppingCart/DecreaseQuantity.js"></script>
+<a href="@Url.Action("Index", "Home")" type="button">Back to Home</a>
