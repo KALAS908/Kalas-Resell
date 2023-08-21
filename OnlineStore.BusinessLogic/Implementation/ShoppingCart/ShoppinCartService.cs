@@ -62,8 +62,7 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
             var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
             var tem = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
             var SubTotal = tem.Quantity * tem.Product.Price;
-            return tem.Quantity.ToString() + " " + SubTotal.ToString();
-
+            return $"{tem.Quantity} {SubTotal}";
         }
     }
 }

@@ -172,11 +172,11 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             UnitOfWork.SaveChanges();
         }
 
-        public List<ShoppingCartDto> GetUserShoppingCart()
+        public IEnumerable<ShoppingCartDto> GetUserShoppingCart()
         {
             var currentUser = CurrentUser;
             var ShoppingCartProducts = UnitOfWork.ShoppingCarts.Get().Where(s => s.UserId.ToString() == currentUser.Id).ToList();
-            List<ShoppingCartDto> ShoppingCartDto = new List<ShoppingCartDto>();
+            var ShoppingCartDto = new List<ShoppingCartDto>();
             foreach (var item in ShoppingCartProducts)
             {
                 var product = UnitOfWork.Products.Get().FirstOrDefault(p => p.Id == item.ProductId);
@@ -185,7 +185,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
                 {
                     ProductId = item.ProductId,
                     ProductName = product.Name,
-                    ProductPrice = (double)product.Price ,
+                    ProductPrice = (double)product.Price,
                     Quantity = (int)item.Quantity,
                     ProductImage = images.Select(x => x.Picture).FirstOrDefault(),
                     ProductSize = UnitOfWork.Measures.Get().FirstOrDefault(x => x.Id == item.MeasureId).MeasureValue,

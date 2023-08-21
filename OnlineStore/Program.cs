@@ -7,6 +7,7 @@ using OnlineStore.DataAccess.EntityFramework.Context;
 using OnlineStore.Entities;
 using OnlineStore.WebApp.Code;
 using OnlineStore.WebApp.Code.ExtensionsMethods;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,6 +1,5 @@
 ﻿function AddToCart() {
     function AddProductToCart(productId, measureId) {
-        //$.post("/Product/AddProductToCart", (data) => { console.log(data); debugger;; })
         $.ajax({
             url:'/Product/AddProductToCart',
             type: 'POST',
@@ -12,11 +11,9 @@
                 setTimeout(() => {
                     notification.classList.add('hidden');
                 }, 3000);
-
-                console.log('product added to cart successfully.');
             },
             error: function (xhr, status, error) {
-                console.log('error adding product to cart:', error);
+                console.error('error adding product to cart:', error);
             }
         });
     }
