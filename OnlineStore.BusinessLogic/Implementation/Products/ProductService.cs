@@ -206,7 +206,6 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             product.Description = model.Description;
             product.Price = model.Price;
             product.Discount = model.Discount;
-
             UnitOfWork.Products.Update(product);
             UnitOfWork.SaveChanges();
 
