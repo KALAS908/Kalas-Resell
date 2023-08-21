@@ -27,16 +27,30 @@ namespace OnlineStore.WebApp.Controllers
         [HttpPost]
         public IActionResult IncreaseQuantity(Guid productId, string measure)
         {
-            ShoppinCartService.IncreaseQuantity(productId, measure);
-            return Ok();
+            try
+            {
+                ShoppinCartService.IncreaseQuantity(productId, measure);
+                return Ok();
+            }
+            catch (System.Exception)
+            {
+                return View("Error_NoutFound");
+            }
             
         }
 
         [HttpPost]
         public IActionResult DecreaseQuantity(Guid productId, string measure)
         {
-            ShoppinCartService.DecreaseQuantity(productId, measure);
-            return Ok();
+            try
+            {
+                ShoppinCartService.DecreaseQuantity(productId, measure);
+                return Ok();
+            }
+            catch (System.Exception)
+            {
+                return View("Error_NoutFound");
+            }
         }
     }
 }

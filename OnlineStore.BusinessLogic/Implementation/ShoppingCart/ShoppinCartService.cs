@@ -3,6 +3,8 @@ using OnlineStore.Common.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,13 +13,14 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
     public class ShoppinCartService : BaseService
     {
         private readonly CurrentUserDto currentUser;
+       
         public ShoppinCartService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
         {
             currentUser = serviceDependencies.CurrentUser;
         }
 
 
-        public void RemoveItem(Guid productId, string  measure)
+        public void RemoveItem(Guid productId, string measure)
         {
             var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
             var tem = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
@@ -27,14 +30,23 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
 
         public void IncreaseQuantity(Guid productId, string measure)
         {
+
             var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
+            if(measureId == null)
+            {
+                throw new Exception("Measure not found");
+            }
             var tem = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
+            if( tem == null)
+            {
+                throw new Exception("Quantity not found");
+            }
             tem.Quantity++;
             var Productmeasure = UnitOfWork.ProductMeasures.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId);
             if (tem.Quantity > Productmeasure.Quantity)
             {
                 tem.Quantity = Productmeasure.Quantity;
-                
+
             }
             UnitOfWork.ShoppingCarts.Update(tem);
             UnitOfWork.SaveChanges();
@@ -43,7 +55,15 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
         public void DecreaseQuantity(Guid productId, string measure)
         {
             var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
+            if (measureId == null)
+            {
+                throw new Exception("Measure not found");
+            }
             var tem = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
+            if (tem == null)
+            {
+                throw new Exception("Quantity not found");
+            }
             tem.Quantity--;
 
             if (tem.Quantity == 0)

@@ -114,6 +114,11 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
         public ProductWithMeasureDto GetProductById(Guid id)
         {
             var product = UnitOfWork.Products.Get().FirstOrDefault(x => x.Id == id);
+            if (product == null)
+            {
+                throw new Exception("Product not found");
+            }
+
             var productDto = new ProductWithMeasureDto
             {
                 Id = product.Id,
@@ -134,6 +139,10 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
         public EditProductDto GetEditProductDto(Guid id)
         {
             var product = UnitOfWork.Products.Get().FirstOrDefault(x => x.Id == id);
+            if(product == null)
+            {
+                throw new Exception("Product not found");
+            }
             var editProductDto = new EditProductDto
             {
                 Id = product.Id,
@@ -207,6 +216,10 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
         {
             
             var productInShoppingCart = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
+            if(currentUser == null)
+            {
+                throw new Exception("You must be logged in to add products to cart");
+            }
             if (productInShoppingCart != null)
             {
                 productInShoppingCart.Quantity += 1;

@@ -5,7 +5,7 @@
             type: 'POST',
             data: { productId: productId, measureId: measureId },
             success: function (result) {
-                
+
                 const notification = document.getElementById('notification');
                 notification.classList.remove('hidden');
                 setTimeout(() => {
@@ -21,6 +21,12 @@
 
     var productId = $('#productIdHidden').val();
     var measureId = $('#productMeasureDropdown').val();
-    AddProductToCart(productId, measureId);
+    var isUserAuthenticated = $('#isUserAuthenticatedHidden').val();
 
+    if (isUserAuthenticated === '') {
+        window.location.href = '/UserAccount/Login';
+    }
+
+    else { AddProductToCart(productId, measureId); }
+    
 }

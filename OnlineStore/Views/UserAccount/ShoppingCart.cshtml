@@ -20,7 +20,7 @@
     @foreach (var item in Model)
     {
         <tr id="item-@item.ProductId-@item.ProductSize">
-            <td>@item.ProductName</td>
+            <td><a href="@Url.Action("ProductDetails", "Product", new { id = item.ProductId })" style="text-decoration: none ; color: black">@item.ProductName</a></td>
             <td>@(item.ProductPrice - (item.ProductPrice * item.ProductDiscount /100) ) </td>
             <td>
                 @item.Quantity

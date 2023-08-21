@@ -49,8 +49,6 @@ namespace OnlineStore.WebApp.Controllers
         public IActionResult Login()
         {
             var model = new LoginModel();
-
-
             return View(model);
         }
         [HttpPost]

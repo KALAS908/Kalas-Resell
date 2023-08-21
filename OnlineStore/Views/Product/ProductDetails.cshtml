@@ -1,4 +1,5 @@
 ﻿@model OnlineStore.Common.DTOs.ProductWithMeasureDto
+@inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
 @{
     ViewData["Title"] = "View";
 }
@@ -37,6 +38,7 @@
 
 </style>
 <input type="hidden" id="productIdHidden" name="productId" value="@Model.Id" />
+<input type="hidden" id="isUserAuthenticatedHidden" name="isUserAuthenticated" value="@CurrentUser.IsAuthenticated" />
 <div class="container text-center">
     <div class="row">
         <div id="Carousel_Description" class="col-8">
