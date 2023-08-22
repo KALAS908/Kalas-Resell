@@ -69,6 +69,20 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpGet]
+        public IActionResult ClothesView()
+        {
+            var model = ProductService.GetAllClothes();
+            return View("ClothesView", model);
+        }
+
+        [HttpGet]
+        public IActionResult ShoesView()
+        {
+                var model = ProductService.GetAllShoes();
+                return View("ShoesView", model);
+        }
+        
+        [HttpGet]
         public IActionResult ProductDetails(Guid id)
         {
             try

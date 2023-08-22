@@ -41,17 +41,117 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 {
                     Id = product.Id,
                     Name = product.Name,
+                    BrandId = (int)product.BrandId,
                     Description = product.Description,
                     Price = (double)product.Price,
                     Brand = brand.Name,
                     Color = Color.Name,
                     Category = category.Name,
+                    CategoryId = (int)category.Id,
                     Images = images.Select(x => x.Picture).ToList(),
                     CoverImage = coverImage.Picture,
                     Discount = (int)product.Discount
                 };
 
 
+
+                productsDto.Add(productDto);
+            }
+            return productsDto;
+        }
+        
+        public List<ProductDto> GetAllClothes()
+        {
+
+
+            var products = UnitOfWork.Products.Get().ToList();
+            var copy = new List<Product>();
+
+            foreach(var item in products)
+            {
+
+                var type = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == item.CategoryId).TypeId;
+                if(type != 1)
+                {
+                    copy.Add(item);
+                }
+            }
+            
+            
+            var productsDto = new List<ProductDto>();
+
+            foreach (var product in copy)
+            {
+                var brand = UnitOfWork.Brands.Get().FirstOrDefault(x => x.Id == product.BrandId);
+                var Color = UnitOfWork.Colors.Get().FirstOrDefault(x => x.Id == product.ColorId);
+                var category = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == product.CategoryId);
+                var images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).ToList();
+                var coverImage = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.Id);
+
+                var productDto = new ProductDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    BrandId = (int)product.BrandId,
+                    Description = product.Description,
+                    Price = (double)product.Price,
+                    Brand = brand.Name,
+                    Color = Color.Name,
+                    Category = category.Name,
+                    CategoryId = (int)category.Id,
+                    Images = images.Select(x => x.Picture).ToList(),
+                    CoverImage = coverImage.Picture,
+                    Discount = (int)product.Discount
+                };
+
+                productsDto.Add(productDto);
+            }
+            return productsDto;
+        }
+
+
+        public List<ProductDto> GetAllShoes()
+        {
+
+            var products = UnitOfWork.Products.Get().ToList();
+            var copy = new List<Product>();
+
+            foreach (var item in products)
+            {
+
+                var type = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == item.CategoryId).TypeId;
+                if (type != 2)
+                {
+                    copy.Add(item);
+                }
+            }
+
+
+            var productsDto = new List<ProductDto>();
+
+            foreach (var product in copy)
+            {
+                var brand = UnitOfWork.Brands.Get().FirstOrDefault(x => x.Id == product.BrandId);
+                var Color = UnitOfWork.Colors.Get().FirstOrDefault(x => x.Id == product.ColorId);
+                var category = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == product.CategoryId);
+                var images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).ToList();
+                var coverImage = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.Id);
+
+                var productDto = new ProductDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    BrandId = (int)product.BrandId,
+                    Description = product.Description,
+                    Price = (double)product.Price,
+                    Brand = brand.Name,
+                    Color = Color.Name,
+                    Category = category.Name,
+                    CategoryId = (int)category.Id,
+                    Images = images.Select(x => x.Picture).ToList(),
+                    CoverImage = coverImage.Picture,
+                    Discount = (int)product.Discount
+                };
 
                 productsDto.Add(productDto);
             }
