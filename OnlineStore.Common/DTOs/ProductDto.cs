@@ -18,6 +18,8 @@ namespace OnlineStore.Common.DTOs
         public string Category { get; set; }
         public int CategoryId { get; set; }
         public int Discount { get; set; } 
+        public string Gender { get; set; }
+        public int GenderId { get; set; }
 
         public string Color { get; set; }
 

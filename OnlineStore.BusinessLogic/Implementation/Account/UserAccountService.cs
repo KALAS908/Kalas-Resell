@@ -30,8 +30,6 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
         public CurrentUserDto Login(string email, string password)
         {
 
-
-
             var user = UnitOfWork.Users.Get().
                 FirstOrDefault(u => u.Email == email);
             password = StringToHash(password);
@@ -190,7 +188,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
                 }
                 else
                 {
-                    if(availableQuantity < item.Quantity)
+                    if (availableQuantity < item.Quantity)
                     {
                         item.Quantity = availableQuantity;
                         UnitOfWork.ShoppingCarts.Update(item);
@@ -214,5 +212,78 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             return ShoppingCartDto;
         }
 
+
+        public int GetUserCount( string searchString)
+        {
+           if(!string.IsNullOrEmpty(searchString))
+            {
+                return UnitOfWork.Users.Get().Where(x => x.FirstName.ToLower().Contains(searchString.ToLower()) || x.LastName.ToLower().Contains(searchString.ToLower()) || x.Email.ToLower().Contains(searchString.ToLower()) || x.UserName.ToLower().Contains(searchString.ToLower())).Count();
+            }
+            return UnitOfWork.Users.Get().Count();
+        }
+
+        public List<UserDto> GetAllUsers(string searchString, int pageSize,int page )
+        {
+
+            var users = UnitOfWork.Users
+                .Get()
+                .Skip((page-1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(x => x.FirstName.ToLower().Contains(searchString.ToLower()) || x.LastName.ToLower().Contains(searchString.ToLower()) || x.Email.ToLower().Contains(searchString.ToLower()) || x.UserName.ToLower().Contains(searchString.ToLower())).ToList();
+            }
+            var usersDto = new List<UserDto>();
+            foreach (var item in users)
+            {
+                var userDto = new UserDto
+                {
+                    UserId = item.Id,
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    Email = item.Email,
+                    UserName = item.UserName,
+                    Role = UnitOfWork.Roles.Get().FirstOrDefault(r => r.Id == item.RoleId).Role1
+                };
+                usersDto.Add(userDto);
+            }
+            return usersDto;
+        }
+
+        public void DeleteUser(Guid Id)
+        {
+
+            var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == Id);
+            if (user != null)
+            {
+                UnitOfWork.Users.Delete(user);
+                UnitOfWork.SaveChanges();
+            }
+        }
+
+        public void MakeAdmin(Guid Id)
+        {
+            var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == Id);
+            if (user != null)
+            {
+                user.RoleId = 1;
+                UnitOfWork.Users.Update(user);
+                UnitOfWork.SaveChanges();
+            }
+        }
+        public void MakeUser(Guid Id)
+        {
+            var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == Id);
+            if (user != null)
+            {
+                user.RoleId = 2;
+                UnitOfWork.Users.Update(user);
+                UnitOfWork.SaveChanges();
+            }
+        }
     }
+
 }
+

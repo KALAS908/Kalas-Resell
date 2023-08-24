@@ -42,6 +42,10 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            if (currentUser.RoleId != "1")
+            {
+                return View("Error_NotFound");
+            }
             var model = new ProductCreateModel();
             return View("Create", model);
         }
@@ -50,38 +54,52 @@ namespace OnlineStore.WebApp.Controllers
         public IActionResult Create(ProductCreateModel model)
         {
 
-            if (model == null)
-            {
-                return View("Error_NotFound");
-            }
-
-
-
-            ProductService.CreateProduct(model);
-            return RedirectToAction("Index", "Home");
+            
+                if (model == null)
+                {
+                    return View("Error_NotFound");
+                }
+                ProductService.CreateProduct(model);
+                return RedirectToAction("Index", "Home");
+            
         }
 
         [HttpGet]
-        public IActionResult ProductsView()
+        public IActionResult ProductsView(int? page)
         {
             var model = ProductService.GetAllProducts();
             return View("ProductsView", model);
         }
 
         [HttpGet]
-        public IActionResult ClothesView()
+        public IActionResult ClothesView(int Id)
         {
-            var model = ProductService.GetAllClothes();
+            var model = ProductService.GetAllClothes(Id);
             return View("ClothesView", model);
         }
 
         [HttpGet]
-        public IActionResult ShoesView()
+        public IActionResult ShoesView(int Id)
         {
-                var model = ProductService.GetAllShoes();
+                var model = ProductService.GetAllShoes(Id);
                 return View("ShoesView", model);
         }
-        
+
+        [HttpGet("/ProductByCategory/")]
+        public IActionResult CategoryView(int Id)
+        {
+            var model = ProductService.GetProductsByCategory(Id);
+            return View("ProductsView", model);
+        }
+     
+
+        [HttpGet]
+        public IActionResult GenderView(int Id)
+        {
+            var model = ProductService.GetProductsByGender(Id);
+            return View("ProductsView", model);
+        }
+
         [HttpGet]
         public IActionResult ProductDetails(Guid id)
         {
@@ -99,6 +117,10 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult AddProductMeasure(Guid id)
         {
+            if (currentUser.RoleId != "1")
+            {
+                return View("Error_NotFound");
+            }
 
             var model = new MeasureQuantityModel();
             model.ProductId = id;
@@ -125,6 +147,10 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult EditProduct(Guid id)
         {
+            if (currentUser.RoleId != "1")
+            {
+                return View("Error_NotFound");
+            }
             try
             {
                 var model = ProductService.GetEditProductDto(id);

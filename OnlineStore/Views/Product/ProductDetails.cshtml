@@ -63,15 +63,15 @@
                     {
                         @if (i == 0)
                         {
-                            <div class="carousel-item active" data-bs-interval="2000">
-                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100" width="300" height="500">
+                            <div class="carousel-item active" data-bs-interval="2000" >
+                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100 " width="300" height="500"  >
                             </div>
                         }
                         else
                         {
 
                             <div class="carousel-item" data-bs-interval="2000">
-                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100" width="300" height="500">
+                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100 " width="300" height="500" >
                             </div>
                         }
                     }

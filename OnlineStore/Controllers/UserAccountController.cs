@@ -7,7 +7,8 @@ using OnlineStore.Code;
 using OnlineStore.Common.DTOs;
 using OnlineStore.WebApp.Code;
 using System.Security.Claims;
- 
+using PagedList;
+
 namespace OnlineStore.WebApp.Controllers
 {
     public class UserAccountController : BaseController
@@ -23,12 +24,36 @@ namespace OnlineStore.WebApp.Controllers
         }
 
 
+        public ViewResult AllUsers ( string searchString , int? page)
+        {
+            double pagesize = 15 ;
+
+           
+            ViewBag.Page = page;
+            if (ViewBag.page == null)
+            {
+                ViewBag.page = 1;
+
+            }
+            ViewBag.SearchString = searchString;
+            ViewBag.PageSize = pagesize;
+  
+            if (CurrentUser.RoleId != "1")
+            {
+                return View("Error_NotFound");
+            }
+
+            var model = UserAccountService.GetAllUsers(searchString,(int)pagesize, ViewBag.page);
+            ViewBag.ModelCount = UserAccountService.GetUserCount(searchString);
+            ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            return View(model);
+        }
+
+
         [HttpGet]
         public IActionResult Register()
         {
             var model = new RegisterModel();
-            //model.CountryList = CountriesService.GetAllCountries();
-           
             return View("Register", model);
         }
 
@@ -39,7 +64,7 @@ namespace OnlineStore.WebApp.Controllers
             {
                 return View("Error_NotFound");
             }
-            //model.CountryList = CountriesService.GetAllCountries();
+
             UserAccountService.RegisterNewUser(model);
 
             return RedirectToAction("Index", "Home");
@@ -96,14 +121,22 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult Profile(Guid Id)
         {
-           
-           var model = UserAccountService.GetUserProfile(Id);
+            if (Id.ToString() != CurrentUser.Id)
+            {
+                return View("Error_NotFound");
+            }
+            var model = UserAccountService.GetUserProfile(Id);
             return View(model);
         }
 
         [HttpGet]
         public IActionResult EditProfile(Guid Id)
         {
+
+            if (Id.ToString() != CurrentUser.Id)
+            {
+                return View("Error_NotFound");
+            }
             var model = UserAccountService.GetUserProfile(Id);
 
             return View(model);
@@ -125,6 +158,38 @@ namespace OnlineStore.WebApp.Controllers
             return View(model);
         }
 
+
+        public IActionResult DeleteByAdmin(Guid UserId)
+        {
+            if(CurrentUser.RoleId != "1")
+            {
+                return View("Error_NotFound");
+            }
+
+            UserAccountService.DeleteUser(UserId);
+            return Ok();
+        }
+
+        public IActionResult MakeAdmin(Guid UserId)
+        {
+            if (CurrentUser.RoleId != "1")
+            {
+                return View("Error_NotFound");
+
+            }
+            UserAccountService.MakeAdmin(UserId);
+              return Ok();
+        }
+        public IActionResult MakeUser(Guid UserId)
+        {
+            if (CurrentUser.RoleId != "1")
+            {
+                return View("Error_NotFound");
+
+            }
+            UserAccountService.MakeUser(UserId);
+            return Ok();
+        }
 
         private async Task LogOut()
         {

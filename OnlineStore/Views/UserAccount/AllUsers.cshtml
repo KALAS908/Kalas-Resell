@@ -1,0 +1,118 @@
+﻿@model IEnumerable<OnlineStore.Common.DTOs.UserDto>
+@inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
+@{
+    ViewBag.Title = "Users";
+    ViewBag.PageCount = Convert.ToInt32(ViewBag.Pagecount);
+    ViewBag.Page = Convert.ToInt32(ViewBag.Page);
+    ViewBag.PageSize = Convert.ToInt32(ViewBag.PageSize);
+    ViewBag.ModelCount = Convert.ToInt32(ViewBag.ModelCount);
+    ViewBag.SerchString = ViewBag.SerchString;
+
+}
+
+<h1>Users</h1>
+
+@using (Html.BeginForm("AllUsers", "UserAccount", FormMethod.Get))
+{
+    <p>
+        Find by name: @Html.TextBox("SearchString",ViewBag.SerchString as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+
+<div>
+    <table class="table" id="user_pagination">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>User Name</th>
+                <th>Role</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-@item.UserId">
+                    <td>@item.UserId</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Email</td>
+                    <td>@item.UserName</td>
+                    <td>@item.Role</td>
+                    <td>
+                        @if (CurrentUser.Id != item.UserId.ToString())
+                        {
+                            <button class="btn btn-danger" onclick="RemoveUser('@item.UserId')">Remove</button>
+                        }
+                        @if(CurrentUser.Id != item.UserId.ToString() && item.Role != "Admin")
+                        {
+                            <button class="btn btn-primary" onclick="MakeAdmin('@item.UserId')">Make Admin</button>
+                        }
+                        @if (CurrentUser.Id != item.UserId.ToString() && item.Role != "User")
+                        {
+                            <button class="btn btn-primary" onclick="MakeUser('@item.UserId')">Make User</button>
+                        }
+                    </td>
+                </tr>
+            }
+    </table>
+
+</div>
+
+
+<nav aria-label="...">
+    <ul class="pagination">
+
+        @if (ViewBag.Page != 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("AllUsers", "UserAccount", new { searchString = ViewBag.SearchString, page = ViewBag.Page - 1 })">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="@Url.Action("AllUsers", "UserAccount", new {searchString = ViewBag.SearchString, page = ViewBag.Page - 1  })">Previous</a>
+            </li>
+        }
+
+
+        @for (int i = 1; i <= ViewBag.PageCount; i++)
+        {
+            <li class="page-item @(ViewBag.Page == i ? "active" : "")">
+                <a class="page-link" href="@Url.Action("AllUsers", "UserAccount", new { searchString = ViewBag.SearchString , page = i})">@i</a>
+            </li>
+        }
+
+        @if (ViewBag.Page != ViewBag.PageCount)
+        {
+            <li>
+                <a class="page-link" href="@Url.Action("AllUsers", "UserAccount", new { searchString = ViewBag.SearchString, page = ViewBag.Page + 1 })">Next</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="@Url.Action("AllUsers", "UserAccount", new {searchString = ViewBag.SearchString, page = ViewBag.Page + 1 })">Next</a>
+            </li>
+        }
+
+    </ul>
+</nav>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/User/Remove.js"></script>
+<script src="~/js/User/MakeAdmin.js"></script>
+<script src="~/js/User/MakeUser.js"></script>
+
+
+
+
+

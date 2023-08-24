@@ -1,5 +1,5 @@
 ﻿function RemoveItem(productId, measure) {
-    
+
     $.ajax({
         /*url: `/ShoppingCart/RemoveItem?` + $.param({
             productId: productId, measure: measure
@@ -10,7 +10,6 @@
         success: function (result) {
            
             $(`#item-${productId}-${measure}`).remove(); 
-            console.log('item removed');
             location.reload();
 
         },
