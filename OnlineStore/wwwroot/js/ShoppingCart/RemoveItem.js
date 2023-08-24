@@ -8,7 +8,11 @@
         type: 'POST',
         data: { productId: productId, measure: measure },
         success: function (result) {
-            $(`#item-${productId}-${measure}`).remove();;
+           
+            $(`#item-${productId}-${measure}`).remove(); 
+            console.log('item removed');
+            location.reload();
+
         },
         error: function (xhr, status, error) {
             console.error('error removing item:', error);
