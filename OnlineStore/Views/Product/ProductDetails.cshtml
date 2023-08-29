@@ -6,7 +6,7 @@
 <style>
 
     .Carousel_description {
-        flex: 0 0 auto; 
+        flex: 0 0 auto;
         max-height: 1000px;
     }
 
@@ -31,10 +31,10 @@
         z-index: 9999;
         transition: opacity 0.5s;
     }
-
-        .notification.hidden {
-            opacity: 0;
-        }
+    .notification.hidden {
+        opacity: 0;
+    }
+   
 
 </style>
 <input type="hidden" id="productIdHidden" name="productId" value="@Model.Id" />
@@ -63,15 +63,15 @@
                     {
                         @if (i == 0)
                         {
-                            <div class="carousel-item active" data-bs-interval="2000" >
-                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100 " width="300" height="500"  >
+                            <div class="carousel-item active" data-bs-interval="2000">
+                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100 " width="300" height="500">
                             </div>
                         }
                         else
                         {
 
                             <div class="carousel-item" data-bs-interval="2000">
-                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100 " width="300" height="500" >
+                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100 " width="300" height="500">
                             </div>
                         }
                     }
@@ -100,15 +100,22 @@
                 </select>
                 <span asp-validation-for="MeasureId" class="text-danger"></span>
             </div>
-            <button onclick="AddToCart()" class="btn btn-primary">Add to cart </button>
-            <a href="@Url.Action("ProductDetails", "Product", new { id = Model.Id })" class="btn btn-primary"><i class="bi bi-box2-heart"></i></a>
+            <div>
+                <button onclick="AddToCart()" class="btn btn-secondary">Add to cart </button>
+                <a href="@Url.Action("ProductDetails", "Product", new { id = Model.Id })" class="btn btn-secondary"><i class="bi bi-box2-heart"></i></a>
+                @if (CurrentUser.RoleId == 1)
+                {
+                    <a href="@Url.Action("AddProductMeasure", "Product", new { id = Model.Id })" class="btn btn-secondary">Add Stock</a>
+                    <a href="@Url.Action("EditProduct", "Product", new { id = Model.Id })" class="btn btn-secondary">Edit Product</a>
+                }
+            </div>
         </div>
     </div>
     <div class="row" id="Description">
         <h3>Description </h3>
         <p>@Model.Description</p>
     </div>
-    <div id="notification" class="notification hidden">Produsul a fost adăugat în coș!</div>
+    <div id="notification" class="notification hidden"></div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

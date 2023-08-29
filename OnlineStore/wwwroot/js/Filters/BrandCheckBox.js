@@ -10,7 +10,7 @@
 
                 $.each(data, (index, brand) => {
                     var listItem = $('<li></li>');
-                    var checkbox = $('<input type="checkbox" />').val(brand.id).prop('id', 'brand_' + brand.id);
+                    var checkbox = $('<input type="checkbox" d/>').val(brand.id).prop('id', 'brand_' + brand.id).prop('data-brand-id', brand.id);
                     var label = $('<label></label>').text(brand.name).attr('for', 'brand_' + brand.id);
 
                     listItem.append(checkbox);

@@ -19,5 +19,7 @@ namespace OnlineStore.WebApp.Controllers
         {
             return Json(GenderService.GetAllGenders());
         }
+
+        
     }
 }

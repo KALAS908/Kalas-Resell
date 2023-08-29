@@ -1,0 +1,27 @@
+﻿@model IEnumerable<OnlineStore.Common.DTOs.OrderedItemDto>
+
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>Product Name</th>
+            <th>Quantity</th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    <a href="@Url.Action("ProductDetails", "Product", new { id = item.ProductId })" style="text-decoration: none ; color: black">  @item.ProductName </a>
+                </td>
+                <td>@item.Quantity</td>
+
+            </tr>
+
+        }
+    </tbody>

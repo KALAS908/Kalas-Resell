@@ -8,6 +8,7 @@ using OnlineStore.Common.DTOs;
 using OnlineStore.WebApp.Code;
 using System.Security.Claims;
 using PagedList;
+using OnlineStore.Entities.Enums;
 
 namespace OnlineStore.WebApp.Controllers
 {
@@ -24,11 +25,11 @@ namespace OnlineStore.WebApp.Controllers
         }
 
 
-        public ViewResult AllUsers ( string searchString , int? page)
+        public ViewResult AllUsers(string searchString, int? page)
         {
-            double pagesize = 15 ;
+            double pagesize = 15;
 
-           
+
             ViewBag.Page = page;
             if (ViewBag.page == null)
             {
@@ -37,13 +38,13 @@ namespace OnlineStore.WebApp.Controllers
             }
             ViewBag.SearchString = searchString;
             ViewBag.PageSize = pagesize;
-  
-            if (CurrentUser.RoleId != "1")
+
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
             {
                 return View("Error_NotFound");
             }
 
-            var model = UserAccountService.GetAllUsers(searchString,(int)pagesize, ViewBag.page);
+            var model = UserAccountService.GetAllUsers(searchString, (int)pagesize, ViewBag.page);
             ViewBag.ModelCount = UserAccountService.GetUserCount(searchString);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
             return View(model);
@@ -67,6 +68,10 @@ namespace OnlineStore.WebApp.Controllers
 
             UserAccountService.RegisterNewUser(model);
 
+            LoginModel loginModel = new LoginModel();
+            loginModel.Email = model.Email;
+            loginModel.Password = model.Password;
+            Login(loginModel);
             return RedirectToAction("Index", "Home");
         }
 
@@ -107,7 +112,8 @@ namespace OnlineStore.WebApp.Controllers
                 new Claim("Id", user.Id.ToString()),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.RoleId.ToString()),
+                new Claim("RoleId", user.RoleId.ToString()),
+
             };
 
             var identity = new ClaimsIdentity(claims, "Cookies");
@@ -119,26 +125,18 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Profile(Guid Id)
+        public IActionResult Profile()
         {
-            if (Id.ToString() != CurrentUser.Id)
-            {
-                return View("Error_NotFound");
-            }
+            var Id = new Guid(CurrentUser.Id);
             var model = UserAccountService.GetUserProfile(Id);
             return View(model);
         }
 
         [HttpGet]
-        public IActionResult EditProfile(Guid Id)
+        public IActionResult EditProfile()
         {
-
-            if (Id.ToString() != CurrentUser.Id)
-            {
-                return View("Error_NotFound");
-            }
+            var Id = new Guid(CurrentUser.Id);
             var model = UserAccountService.GetUserProfile(Id);
-
             return View(model);
         }
 
@@ -161,7 +159,7 @@ namespace OnlineStore.WebApp.Controllers
 
         public IActionResult DeleteByAdmin(Guid UserId)
         {
-            if(CurrentUser.RoleId != "1")
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
             {
                 return View("Error_NotFound");
             }
@@ -170,19 +168,28 @@ namespace OnlineStore.WebApp.Controllers
             return Ok();
         }
 
+
+        public IActionResult DeleteAccount()
+        {
+
+            UserAccountService.DeleteAccount();
+            Logout();
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult MakeAdmin(Guid UserId)
         {
-            if (CurrentUser.RoleId != "1")
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
             {
                 return View("Error_NotFound");
 
             }
             UserAccountService.MakeAdmin(UserId);
-              return Ok();
+            return Ok();
         }
         public IActionResult MakeUser(Guid UserId)
         {
-            if (CurrentUser.RoleId != "1")
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
             {
                 return View("Error_NotFound");
 
@@ -196,5 +203,12 @@ namespace OnlineStore.WebApp.Controllers
             await HttpContext.SignOutAsync(scheme: "OnlineStoreCookies");
         }
 
+
+        [HttpGet]
+        public IActionResult Orders()
+        {
+            var model = UserAccountService.GetUserOrders();
+            return View(model);
+        }
     }
 }

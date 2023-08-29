@@ -1,7 +1,23 @@
 ﻿@inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
+@{
 
+    ViewBag.Title = "ProductsView";
+
+}
+
+<style>
+    .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: #f9f9f9;
+        padding: 5px 0;
+        box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+    }
+</style>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,7 +30,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-darkt bg-dark border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-darkt bg-dark border-bottom box-shadow mb-3" id="menu">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="color: white"><i class="bi bi-house">Home </i></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -32,29 +48,28 @@
                                     <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">  Products  </a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a class="dropdown-item" href="@Url.Action("GenderView", "Product", new { id = 1 })"> Men &equiv; </a>
+                                            <a class="dropdown-item" href="@Url.Action("GenderView", "Product", new { genderId = 1 })"> Men &equiv; </a>
                                             <ul class="submenu dropdown-menu">
                                                 <li>
-                                                    <a class="dropdown-item" href="@Url.Action("ShoesView", "Product", new { id = 1 })">Shoes &equiv; </a>
+                                                    <a class="dropdown-item" href="@Url.Action("ShoesView", "Product", new { genderId = 1 })">Shoes &equiv; </a>
                                                     <ul class="submenu dropdown-menu">
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 1 })">Sneakers</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 2 })">Low Top</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 3 })">Slides</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 5 })">High Tops</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 6 })">Boots </a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 1 })">Sneakers</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 2 })">Low Top</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 3 })">Slides</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 4 })">High Tops</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 5 })">Boots </a></li>
                                                     </ul>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="@Url.Action("ClothesView", "Product", new { id = 1 })">Clothes &equiv; </a>
+                                                    <a class="dropdown-item" href="@Url.Action("ClothesView", "Product", new { genderId = 1 })">Clothes &equiv; </a>
                                                     <ul class="submenu dropdown-menu">
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 13 })">T-Shirts</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 14 })">Shirts</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 15 })">Shorts</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 16 })">Trousers</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 17 })">Hoodies and Sweaters</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 17 })">Hoodies and Sweaters</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 18 })">UnderWear</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 19 })">Jackets and Coats</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 11 })">T-Shirts</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 12 })">Shirts</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 13 })">Shorts</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 14 })">Trousers</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 15 })">Hoodies and Sweaters</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 16 })">UnderWear</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 17 })">Jackets and Coats</a></li>
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -62,31 +77,30 @@
 
 
                                         <li>
-                                            <a class="dropdown-item" href="@Url.Action("GenderView", "Product", new { id = 2 })"> Women &equiv; </a>
+                                            <a class="dropdown-item" href="@Url.Action("GenderView", "Product", new { genderId = 2 })"> Women &equiv; </a>
                                             <ul class="submenu dropdown-menu">
                                                 <li>
-                                                    <a class="dropdown-item" href="@Url.Action("GenderView", "Product", new { id = 2 })">Shoes &equiv; </a>
+                                                    <a class="dropdown-item" href="@Url.Action("ShoesView", "Product", new { genderId = 2 })">Shoes &equiv; </a>
                                                     <ul class="submenu dropdown-menu">
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 7 })">Sneakers</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 8 })">Low Top</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 9 })">Slides</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 11 })">High Tops</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 12 })">Boots</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 6 })">Sneakers</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 7 })">Low Top</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 8 })">Slides</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryIdid = 9 })">High Tops</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 10 })">Boots</a></li>
                                                     </ul>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="@Url.Action("ClothesView", "Product", new { id = 2 })">Clothes &equiv; </a>
+                                                    <a class="dropdown-item" href="@Url.Action("ClothesView", "Product", new { genderId = 2 })">Clothes &equiv; </a>
                                                     <ul class="submenu dropdown-menu">
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 20 })">T-Shirts</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 21 })">Shirts</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 22 })">Shorts</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 23 })">Trousers</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 24 })">Hoodies and Sweaters</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 25 })">Hoodies and Sweaters</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 26 })">UnderWear</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 27 })">Dress</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 28 })">Skirts</a></li>
-                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { id = 29 })">Jackets and Coats</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 18 })">T-Shirts</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 19 })">Shirts</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 20 })">Shorts</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 21 })">Trousers</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 22 })">Hoodies and Sweaters</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 23 })">UnderWear</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 24 })">Dress</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 25 })">Skirts</a></li>
+                                                        <li><a class="dropdown-item" href="@Url.Action("CategoryView", "Product", new { categoryId = 26 })">Jackets and Coats</a></li>
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -98,22 +112,21 @@
 
                         @if (CurrentUser.IsAuthenticated)
                         {
-
-                            @if (CurrentUser.RoleId == "1")
+                            @if (CurrentUser.RoleId == 1)
                             {
-                                    <ul class="navbar-nav">
-                                        <li class="nav-item dropdown" id="myDropdown">
-                                            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">  Admin Actions  </a>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <a class="dropdown-item" href="@Url.Action("Create", "Product", new { id = 1 })">Create Product</a>
-                                                </li>
-                                                <li>
+                                <ul class="navbar-nav">
+                                    <li class="nav-item dropdown" id="myDropdown">
+                                        <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">  Admin Actions  </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("Create", "Product", new { id = 1 })">Create Product</a>
+                                            </li>
+                                            <li>
                                                 <a class="dropdown-item" href="@Url.Action("AllUsers", "UserAccount" , new {page = 1})">Users</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
                             }
                         }
                     </ul>
@@ -139,6 +152,10 @@
         </nav>
     </header>
     <div class="container">
+
+        @{
+            Html.RenderPartialAsync("RenderMenu", "Home");
+        }
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

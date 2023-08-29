@@ -20,6 +20,23 @@ namespace OnlineStore.WebApp.Controllers
             
         }
 
+        public List<CategoryDto> GetAllCategories()
+        {
+            List<Category> categories = UnitOfWork.Categories.Get().ToList();
+            List<CategoryDto> categoryList = new List<CategoryDto>();
+            foreach (var category in categories)
+            {
+                categoryList.Add(new CategoryDto
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    GenderId = category.GenderId,
+                    TypeId = category.TypeId
+                });
+            }
+            return categoryList;
+        }
+
         public List<CategoryDto> GetCategories(int genderId,int typeId) 
         { 
             List<Category> categories = UnitOfWork.Categories.Get().Where(categories => categories.GenderId == genderId && categories.TypeId == typeId).ToList();

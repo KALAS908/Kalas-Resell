@@ -15,7 +15,7 @@ namespace OnlineStore.Entities.Entities
 
         public int Id { get; set; }
         public string MeasureValue { get; set; }
-        public int? TypeId { get; set; }
+        public int TypeId { get; set; }
 
         public virtual Type Type { get; set; }
         public virtual ICollection<ProductMeasure> ProductMeasure { get; set; }

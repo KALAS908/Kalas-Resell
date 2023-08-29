@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace OnlineStore.Common.DTOs
 {
-    public class CategoryDto
+     public class OrderDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public int GenderId { get; set; }
-        public int TypeId { get; set; }
+        public string UserId { get; set; }
 
+
+        public double TotalPrice { get; set; }
     }
 }

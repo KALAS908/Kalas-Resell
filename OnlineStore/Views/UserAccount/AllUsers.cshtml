@@ -49,7 +49,7 @@
                         {
                             <button class="btn btn-danger" onclick="RemoveUser('@item.UserId')">Remove</button>
                         }
-                        @if(CurrentUser.Id != item.UserId.ToString() && item.Role != "Admin")
+                        @if (CurrentUser.Id != item.UserId.ToString() && item.Role != "Admin")
                         {
                             <button class="btn btn-primary" onclick="MakeAdmin('@item.UserId')">Make Admin</button>
                         }

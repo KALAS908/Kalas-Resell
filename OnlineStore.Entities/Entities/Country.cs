@@ -15,7 +15,6 @@ namespace OnlineStore.Entities.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Iso { get; set; }
-        public byte[] Flag { get; set; }
 
         public virtual ICollection<User> User { get; set; }
     }

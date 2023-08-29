@@ -21,7 +21,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Products.Validations
                 .NotEmpty().WithMessage("Camp obligatoriu!")
                 .Must(NotAlreadyExistName).WithMessage("Acest nume exista deja");
             RuleFor(p => p.Description)
-                .NotEmpty().WithMessage("Camp obligatoriu!");
+                .NotEmpty().WithMessage("Camp obligatoriu!")
+                .Must(ToLongDescription).WithMessage("Descrierea este prea lunga");
             RuleFor(p => p.Price)
                 .NotEmpty().WithMessage("Camp obligatoriu!");
             RuleFor(p => p.GenderId)
@@ -30,6 +31,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products.Validations
                 .NotEmpty().WithMessage("Camp obligatoriu!");
             RuleFor(p => p.ColorId)
                 .NotEmpty().WithMessage("Camp obligatoriu!");
+           
 
         }
 
@@ -42,6 +44,15 @@ namespace OnlineStore.BusinessLogic.Implementation.Products.Validations
                 }
                 return true;
             
+        }
+
+        private bool ToLongDescription(string arg)
+        {
+            if (arg.Length > 500)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

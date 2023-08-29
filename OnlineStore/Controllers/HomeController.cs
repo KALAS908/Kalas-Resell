@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OnlineStore.BusinessLogic.Implementation.GenderImplementation;
+using OnlineStore.BusinessLogic.Implementation.Products;
+using OnlineStore.BusinessLogic.Implementation.TypeImplementation;
 using OnlineStore.Code;
 using OnlineStore.Models;
 using OnlineStore.WebApp.Code;
+using OnlineStore.WebApp.Controllers;
 using System.Diagnostics;
 
 namespace OnlineStore.Controllers
@@ -10,16 +14,34 @@ namespace OnlineStore.Controllers
     public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ProductService _productService;
+        private readonly CategoryService _categoryService;
+        private readonly TypeService _typeService;
+        private readonly GenderService _genderService;
 
-        public HomeController(ControllerDependencies dependencies, ILogger<HomeController> logger)
-            :base(dependencies)
+        public HomeController(ControllerDependencies dependencies, ILogger<HomeController> logger, ProductService productService, GenderService genderService, CategoryService categoryService , TypeService typeService)
+            : base(dependencies)
         {
             _logger = logger;
+            _productService = productService;
+            _genderService = genderService;
+            _categoryService = categoryService;
+            _typeService = typeService;
+
         }
 
         public IActionResult Index()
+        { 
+            var model = _productService.GetAllProducts();
+            return View("Index", model);
+        }
+
+        public ActionResult RenderMenu()
         {
-            return View();
+            ViewBag.Categories = _categoryService.GetAllCategories();
+            ViewBag.Genders = _genderService.GetAllGenders();
+            ViewBag.Types = _typeService.GetAllTypes();
+            return PartialView("_MenuBar");
         }
 
         public IActionResult Privacy()

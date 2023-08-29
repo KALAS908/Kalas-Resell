@@ -1,5 +1,5 @@
-﻿function BrandFilterApplied() {
-    var selectedBrands = []; 
+﻿function BrandCategoryFilterApplied() {
+    var selectedBrands = [];
     function getSelectedBrands() {
         selectedBrands = [];
         $('input[type=checkbox]').each(function () {
@@ -9,25 +9,19 @@
         });
         return selectedBrands;
     }
-    function redirectToShoesView(genderId, searchString, page, selectedBrands) {
-    
+    function redirectToShoesView(categoryId, searchString, page, selectedBrands) {
+
         var url = window.location.pathname;
-        url = url + '?&genderId=' + genderId + '&searchString=' + searchString + '&page=' + page + '&selectedBrands=' + selectedBrands;
+        url = url + '?&categoryId=' + categoryId + '&searchString=' + searchString + '&page=' + page + '&selectedBrands=' + selectedBrands;
         window.location.href = url;
     }
 
     $('#applyFilterButton').click(function () {
-        var genderId = $('#genderIdHidden').val();
-        var searchString = $('#searchStringHidden').val(); 
+        var categoryId = $('#categoryIdHidden').val();
+        var searchString = $('#searchStringHidden').val();
         var page = 1;
         selectedBrands = getSelectedBrands();
         selectedBrands = selectedBrands.join(',');
-        redirectToShoesView(genderId, searchString, page, selectedBrands);
+        redirectToShoesView(categoryId, searchString, page, selectedBrands);
     });
 }
-
-
-
-
-
-

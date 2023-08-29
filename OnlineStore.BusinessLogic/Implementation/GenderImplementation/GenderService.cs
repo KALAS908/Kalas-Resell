@@ -13,7 +13,6 @@ namespace OnlineStore.BusinessLogic.Implementation.GenderImplementation
         public GenderService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
         {
         }
-
         public List<GenderDto> GetAllGenders()
         {
             List<Gender> genders = UnitOfWork.Genders.Get().ToList();
@@ -24,7 +23,6 @@ namespace OnlineStore.BusinessLogic.Implementation.GenderImplementation
                 {
                     Id = gender.Id,
                     Name = gender.GenderName
-
                 });
                 
             }

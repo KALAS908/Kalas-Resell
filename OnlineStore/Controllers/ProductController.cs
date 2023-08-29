@@ -11,9 +11,10 @@ using OnlineStore.BusinessLogic.Implementation.Products.Models;
 using OnlineStore.Code;
 using OnlineStore.Common.DTOs;
 using OnlineStore.Entities.Entities;
+using OnlineStore.Entities.Enums;
 using OnlineStore.WebApp.Code;
+using PagedList;
 using System.Security.Claims;
-
 
 namespace OnlineStore.WebApp.Controllers
 {
@@ -27,6 +28,7 @@ namespace OnlineStore.WebApp.Controllers
         public readonly MeasureService MeasureService;
         public readonly CurrentUserDto currentUser;
 
+
         public ProductController(ControllerDependencies dependencies, BrandService brandService, ColorService colorService, CategoryService categoryService, ProductService productService, MeasureService measureService)
             : base(dependencies)
         {
@@ -37,67 +39,167 @@ namespace OnlineStore.WebApp.Controllers
             ProductService = productService;
             MeasureService = measureService;
             currentUser = dependencies.CurrentUser;
+
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
-            if (currentUser.RoleId != "1")
-            {
-                return View("Error_NotFound");
-            }
-            var model = new ProductCreateModel();
-            return View("Create", model);
-        }
-
-        [HttpPost]
-        public IActionResult Create(ProductCreateModel model)
-        {
-
-            
-                if (model == null)
-                {
-                    return View("Error_NotFound");
-                }
-                ProductService.CreateProduct(model);
-                return RedirectToAction("Index", "Home");
-            
-        }
-
-        [HttpGet]
-        public IActionResult ProductsView(int? page)
+        public IActionResult ProductsView()
         {
             var model = ProductService.GetAllProducts();
             return View("ProductsView", model);
         }
 
         [HttpGet]
-        public IActionResult ClothesView(int Id)
+        public IActionResult Create()
         {
-            var model = ProductService.GetAllClothes(Id);
-            return View("ClothesView", model);
+            if (currentUser.RoleId == (int)RolesEnum.Admin)
+            {
+                var model = new ProductCreateModel();
+                return View("Create", model);
+            }
+            return View("Error_NotFound");
         }
 
-        [HttpGet]
-        public IActionResult ShoesView(int Id)
+        [HttpPost]
+        public IActionResult Create(ProductCreateModel model)
         {
-                var model = ProductService.GetAllShoes(Id);
-                return View("ShoesView", model);
+
+
+            if (model == null)
+            {
+                return View("Error_NotFound");
+            }
+            ProductService.CreateProduct(model);
+            return RedirectToAction("Index", "Home");
+
+        }
+
+        [HttpGet("/Prduct/ClothesView/")]
+        public IActionResult ClothesView(int genderId, string searchString, int? page, string selectedBrands)
+        {
+            var brandsId = new List<int>();
+            if (selectedBrands != null)
+            {
+                var brands = selectedBrands.Split(',');
+                foreach (var brand in brands)
+                {
+                    if (brand != "")
+                    {
+                        brandsId.Add(int.Parse(brand));
+                    }
+                }
+            }
+            double pagesize = 15;
+            if (page == null)
+            {
+                page = 1;
+            }
+            ViewBag.Page = page;
+            ViewBag.SearchString = searchString;
+            ViewBag.PageSize = pagesize;
+            ViewBag.GenderId = genderId;
+            ViewBag.SelectedBrands = selectedBrands;
+            var model = ProductService.GetAllClothes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId);
+            ViewBag.ModelCount = ProductService.GetClothesCount(searchString, genderId, brandsId);
+            ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            return View(model);
+        }
+
+        [HttpGet("/Prduct/ShoesView/")]
+        public ViewResult ShoesView(int genderId, string searchString, int? page, string selectedBrands)
+        {
+
+            var brandsId = new List<int>();
+            if (selectedBrands != null)
+            {
+                var brands = selectedBrands.Split(',');
+                foreach (var brand in brands)
+                {
+                    if (brand != "")
+                    {
+                        brandsId.Add(int.Parse(brand));
+                    }
+                }
+            }
+            double pagesize = 15;
+            if (page == null)
+            {
+                page = 1;
+            }
+            ViewBag.Page = page;
+            ViewBag.SearchString = searchString;
+            ViewBag.PageSize = pagesize;
+            ViewBag.GenderId = genderId;
+            ViewBag.SelectedBrands = selectedBrands;
+            var model = ProductService.GetAllShoes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId);
+            ViewBag.ModelCount = ProductService.GetShoesCount(searchString, genderId, brandsId);
+            ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            return View(model);
         }
 
         [HttpGet("/ProductByCategory/")]
-        public IActionResult CategoryView(int Id)
+        public IActionResult CategoryView(int categoryId, string searchString, int? page, string selectedBrands)
         {
-            var model = ProductService.GetProductsByCategory(Id);
-            return View("ProductsView", model);
-        }
-     
 
-        [HttpGet]
-        public IActionResult GenderView(int Id)
+            var brandsId = new List<int>();
+            if (selectedBrands != null)
+            {
+                var brands = selectedBrands.Split(',');
+                foreach (var brand in brands)
+                {
+                    if (brand != "")
+                    {
+                        brandsId.Add(int.Parse(brand));
+                    }
+                }
+            }
+            double pagesize = 15;
+            if (page == null)
+            {
+                page = 1;
+            }
+            ViewBag.Page = page;
+            ViewBag.SearchString = searchString;
+            ViewBag.PageSize = pagesize;
+            ViewBag.SelectedBrands = selectedBrands;
+            ViewBag.CategoryId = categoryId;
+            var model = ProductService.GetProuctsByCategory(categoryId, searchString, ViewBag.page, (int)pagesize, brandsId);
+            ViewBag.ModelCount = ProductService.GetCategoryCount(searchString, categoryId, brandsId);
+            ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            return View(model);
+        }
+
+
+        [HttpGet("/Product/GenderView/")]
+        public IActionResult GenderView(int genderId, string searchString, int? page, string selectedBrands)
         {
-            var model = ProductService.GetProductsByGender(Id);
-            return View("ProductsView", model);
+
+            var brandsId = new List<int>();
+            if (selectedBrands != null)
+            {
+                var brands = selectedBrands.Split(',');
+                foreach (var brand in brands)
+                {
+                    if (brand != "")
+                    {
+                        brandsId.Add(int.Parse(brand));
+                    }
+                }
+            }
+            double pagesize = 15;
+            if (page == null)
+            {
+                page = 1;
+            }
+            ViewBag.Page = page;
+            ViewBag.SearchString = searchString;
+            ViewBag.PageSize = pagesize;
+            ViewBag.GenderId = genderId;
+            ViewBag.SelectedBrands = selectedBrands;
+            var model = ProductService.GetProuctsByGender(genderId, searchString, ViewBag.page, (int)pagesize, brandsId);
+            ViewBag.ModelCount = ProductService.GetGenderCount(searchString, genderId, brandsId);
+            ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            return View(model);
         }
 
         [HttpGet]
@@ -117,7 +219,7 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult AddProductMeasure(Guid id)
         {
-            if (currentUser.RoleId != "1")
+            if (currentUser.RoleId != (int)RolesEnum.Admin)
             {
                 return View("Error_NotFound");
             }
@@ -147,7 +249,7 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult EditProduct(Guid id)
         {
-            if (currentUser.RoleId != "1")
+            if (currentUser.RoleId != (int)RolesEnum.Admin)
             {
                 return View("Error_NotFound");
             }
@@ -185,9 +287,9 @@ namespace OnlineStore.WebApp.Controllers
             else
             {
                 return RedirectToAction("Login", "UserAccount");
-   
+
             }
-          
+
         }
 
     }

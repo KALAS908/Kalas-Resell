@@ -9,7 +9,7 @@ namespace OnlineStore.Entities.Entities
     {
         public int Id { get; set; }
         public byte[] Picture { get; set; }
-        public Guid? ProductId { get; set; }
+        public Guid ProductId { get; set; }
 
         public virtual Product Product { get; set; }
     }

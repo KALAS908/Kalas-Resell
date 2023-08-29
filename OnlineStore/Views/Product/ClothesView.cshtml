@@ -1,77 +1,138 @@
 ﻿@model IEnumerable<OnlineStore.Common.DTOs.ProductDto>
 @inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
+@{
+    ViewBag.Title = "Shoes";
+    ViewBag.PageCount = Convert.ToInt32(ViewBag.Pagecount);
+    ViewBag.Page = Convert.ToInt32(ViewBag.Page);
+    ViewBag.PageSize = Convert.ToInt32(ViewBag.PageSize);
+    ViewBag.ModelCount = Convert.ToInt32(ViewBag.ModelCount);
+    ViewBag.SearchString = ViewBag.SearchString;
+    ViewBag.SelectedBrands = ViewBag.SelectedBrands;
+    ViewBag.GenderId = Convert.ToInt32(ViewBag.GenderId);
+}
 
 
 <link rel="stylesheet" href="~/css/Filters/Filters.css" />
-<body>
+
+<style>
+
+    .content-container {
+        height: 75%;
+    }
+
+    .pagination-container {
+        bottom: 0;
+        width: 100%;
+        background-color: #f9f9f9;
+    }
+
+</style>
+@using (Html.BeginForm("ClothesView", "Product", new { genderId = ViewBag.GenderId }, FormMethod.Get))
+{
+    <div>
+        Find by name: @Html.TextBox("SearchString", ViewBag.SearchString as string)
+
+        @Html.Hidden( "genderId", ViewBag.GenderId as int?)
+        @Html.Hidden("selectedBrands", ViewBag.SelectedBrands as string)
+        <input type="submit" value="Search" class="btn btn-dark" />
+    </div>
+}
+
+<div class="content-container">
+    <input type="hidden" id="genderIdHidden" name="genderId" value="@ViewBag.GenderId" />
+    <input type="hidden" id="searchStringHidden" name="searchString" value="@ViewBag.SearchString" />
+    <input type="hidden" id="pageHidden" name="page" value="@ViewBag.Page" />
+    <input type="hidden" id="selectedBrandsHidden" name="selectedBrands" value="@ViewBag.SelectedBrands" />
     <div class="filter-container">
-        <div class="card" id="priceFilter">
-            <h5>Price Range</h5>
-            <div class="price-content">
-                <div>
-                    <label>Min</label>
-                    <p id="min-value">$0</p>
-                </div>
-                <div>
-                    <label>Max</label>
-                    <p id="max-value">$1000</p>
-                </div>
-
-            </div>
-
-            <div class="range-slider">
-                <input type="range" class="min-price" value="0" min="0" max="10000" step="10">
-                <input type="range" class="max-price" value="10000" min="0" max="10000" step="10">
-            </div>
-        </div>
 
         <div id="brandFilter">
             <h5>Brands</h5>
             <ul id="brandList"></ul>
         </div>
-        <button id="applyFilterButton">Apply  Filters</button>
+        <button id="applyFilterButton" class="btn btn-secondary">Apply  Filters</button>
+
     </div>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 product-card " data-price="@product.Price - (@product.Price * @product.Discount)/100" data-brand-id="@product.BrandId">
+                <div class="card mb-4 ">
+                    <div class="card-body">
+                        <img src="data:image/png;base64,@Convert.ToBase64String(product.CoverImage)" style="max-width: 300px; max-height: 300px;" height="250" width="300" />
+                        <h5 class="card-title">@product.Name</h5>
 
-    <div class="container">
-        <div class="row">
-            @foreach (var product in Model)
-            {
-                <div class="col-md-4 product-card" data-price="@product.Price - (@product.Price * @product.Discount)/100" data-brand-id="@product.BrandId">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <img src="data:image/png;base64,@Convert.ToBase64String(product.CoverImage)" style="max-width: 300px;" />
-                            <h5 class="card-title">@product.Name</h5>
+                        @if (product.Discount > 0)
+                        {
+                            <p class="card-text">
+                                @($"Discount: {product.Discount} % Price: {product.Price - (product.Price * product.Discount) / 100} USD")
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="card-text">@($"Price: {product.Price - (product.Price * product.Discount) / 100} USD")</p>
+                        }
 
-                            @if (product.Discount > 0)
-                            {
-                                <p class="card-text">
-                                    @($"Discount: {product.Discount} % Price: {product.Price - (product.Price * product.Discount) / 100} USD")
-                                </p>
-                            }
-                            else
-                            {
-                                <p class="card-text">@($"Price: {product.Price - (product.Price * product.Discount) / 100} USD")</p>
-                            }
+                        <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="btn btn-dark">Product Info </a>
 
-                            <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="btn btn-primary">Show Product</a>
-                            @if (CurrentUser.RoleId == "1")
-                            {
-                                <a href="@Url.Action("AddProductMeasure", "Product", new { id = product.Id })" class="btn btn-primary">Add Measure</a>
-                                <a href="@Url.Action("EditProduct", "Product", new { id = product.Id })" class="btn btn-primary">Edit Product</a>
-                            }
 
-                        </div>
                     </div>
                 </div>
-            }
-        </div>
+            </div>
+        }
     </div>
 
-</body>
+</div>
+<div class="pagiantion-container">
+    <ul class="pagination">
+
+        @if (ViewBag.Page != 1 && ViewBag.ModelCount != 0)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("ClothesView", "Product", new {genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page - 1 , selectedBrands =ViewBag.SelectedBrands })">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="@Url.Action("ClothesView", "Product", new {genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page - 1 , selectedBrands =ViewBag.SelectedBrands })">Previous</a>
+            </li>
+        }
+
+
+        @for (int i = 1; i <= ViewBag.PageCount; i++)
+        {
+            <li class="page-item @(ViewBag.Page == i ? "active" : "")">
+                <a class="page-link" href="@Url.Action("ClothesView", "Product", new {genderId = ViewBag.GenderId , searchString = ViewBag.SearchString , page = i , selectedBrands =ViewBag.SelectedBrands})">@i</a>
+            </li>
+        }
+
+        @if (ViewBag.Page != ViewBag.PageCount && ViewBag.ModelCount != 0)
+        {
+            <li>
+                <a class="page-link" href="@Url.Action("ClothesView", "Product", new { genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page + 1 , selectedBrands =ViewBag.SelectedBrands})">Next</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="@Url.Action("ClothesView", "Product", new {genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page + 1, selectedBrands =ViewBag.SelectedBrands})">Next</a>
+            </li>
+        }
+
+    </ul>
+
+</div>
+
+
+
+
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="~/js/Filters/PriceRange.js"></script>
-@*<script src="~/js/Filters/PriceRangeApplied.js"></script>*@
 <script src="~/js/Filters/BrandCheckBox.js"></script>
 <script type="text/javascript">new BrandCheckBox()</script>
-@*<script src="~/js/Filters/BrandFilterApplied.js"></script>*@
-<script src="~/js/Filters/AppliedFilters.js"></script>
+@*<script src="~/js/Filters/AppliedFilters.js"></script>*@
+<script src="~/js/Filters/BrandFilterApplied.js"></script>
+<script type="text/javascript">new BrandFilterApplied()</script>
+<script src="~/js/Filters/JavaScript.js"></script>
+

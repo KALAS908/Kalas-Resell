@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using OnlineStore.BusinessLogic.Implementation.Products.Validations;
 using OnlineStore.Common.Extesnsions;
+using Microsoft.EntityFrameworkCore;
+using Azure;
+using System.Drawing.Printing;
 
 namespace OnlineStore.BusinessLogic.Implementation.Products
 {
@@ -25,32 +28,34 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
 
         public List<ProductDto> GetAllProducts()
         {
-            var products = UnitOfWork.Products.Get().ToList();
+            var products = UnitOfWork.Products
+                .Get()
+                .Include(x => x.Brand)
+                .Include(x => x.Category)
+                .Include(x => x.Color)
+                .Include(x => x.Image)
+                .Take(30)
+                .ToList();
 
             var productsDto = new List<ProductDto>();
 
             foreach (var product in products)
             {
-                var brand = UnitOfWork.Brands.Get().FirstOrDefault(x => x.Id == product.BrandId);
-                var Color = UnitOfWork.Colors.Get().FirstOrDefault(x => x.Id == product.ColorId);
-                var category = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == product.CategoryId);
-                var images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).ToList();
-                var coverImage = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.Id);
 
                 var productDto = new ProductDto
                 {
                     Id = product.Id,
                     Name = product.Name,
-                    BrandId = (int)product.BrandId,
+                    BrandId = product.BrandId,
                     Description = product.Description,
-                    Price = (double)product.Price,
-                    Brand = brand.Name,
-                    Color = Color.Name,
-                    Category = category.Name,
-                    CategoryId = (int)category.Id,
-                    Images = images.Select(x => x.Picture).ToList(),
-                    CoverImage = coverImage.Picture,
-                    Discount = (int)product.Discount
+                    Price = product.Price,
+                    Brand = product.Brand.Name,
+                    Color = product.Color.Name,
+                    Category = product.Category.Name,
+                    CategoryId = product.Category.Id,
+                    Images = product.Image.Select(x => x.Picture).ToList(),
+                    CoverImage = product.Image.FirstOrDefault().Picture,
+                    Discount = product.Discount
                 };
 
 
@@ -59,50 +64,88 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             }
             return productsDto;
         }
-        
-        public List<ProductDto> GetAllClothes(int genderId)
+
+        public int GetClothesCount(string searchString, int genderId, List<int> brandsId)
         {
 
+            var products = UnitOfWork.Products
+                 .Get()
+                 .Include(x => x.Brand)
+                 .Include(x => x.Category)
+                 .Include(x => x.Color)
+                 .Include(x => x.Image)
+                 .Where(x => x.Category.TypeId == 2 && x.Category.GenderId == genderId)
+                 .ToList();
 
-            var products = UnitOfWork.Products.Get().ToList();
-            var copy = new List<Product>();
 
-            foreach(var item in products)
+            if (brandsId.Count > 0)
             {
-
-                var type = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == item.CategoryId).TypeId;
-                var gender = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == item.CategoryId).GenderId;
-                if(type == 2 && gender == genderId)
-                {
-                    copy.Add(item);
-                }
+                products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
             }
-            
-            
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+            }
+
+            return products.Count;
+        }
+
+        public List<ProductDto> GetAllClothes(int genderId, string searchString, int page, int pageSize, List<int> brandsId)
+        {
+
+            var products = new List<Product>();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = UnitOfWork.Products
+                    .Get()
+                    .Include(x => x.Brand)
+                    .Include(x => x.Category)
+                    .Include(x => x.Color)
+                    .Include(x => x.Image)
+                    .Where(x => x.Category.TypeId == 2 && x.Category.GenderId == genderId && x.Name.ToLower().Contains(searchString.ToLower()))
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+            }
+            else
+            {
+                products = UnitOfWork.Products
+                     .Get()
+                     .Include(x => x.Brand)
+                     .Include(x => x.Category)
+                     .Include(x => x.Color)
+                     .Include(x => x.Image)
+                     .Where(x => x.Category.TypeId == 2 && x.Category.GenderId == genderId)
+                     .Skip((page - 1) * pageSize)
+                     .Take(pageSize)
+                     .ToList();
+            }
+
+            if (brandsId.Count > 0)
+            {
+                products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
+            }
+
+
             var productsDto = new List<ProductDto>();
 
-            foreach (var product in copy)
+            foreach (var product in products)
             {
-                var brand = UnitOfWork.Brands.Get().FirstOrDefault(x => x.Id == product.BrandId);
-                var Color = UnitOfWork.Colors.Get().FirstOrDefault(x => x.Id == product.ColorId);
-                var category = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == product.CategoryId);
-                var images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).ToList();
-                var coverImage = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.Id);
-
                 var productDto = new ProductDto
                 {
                     Id = product.Id,
                     Name = product.Name,
-                    BrandId = (int)product.BrandId,
+                    BrandId = product.BrandId,
                     Description = product.Description,
-                    Price = (double)product.Price,
-                    Brand = brand.Name,
-                    Color = Color.Name,
-                    Category = category.Name,
-                    CategoryId = (int)category.Id,
-                    Images = images.Select(x => x.Picture).ToList(),
-                    CoverImage = coverImage.Picture,
-                    Discount = (int)product.Discount
+                    Price = product.Price,
+                    Brand = product.Brand.Name,
+                    Color = product.Color.Name,
+                    Category = product.Category.Name,
+                    CategoryId = product.Category.Id,
+                    Images = product.Image.Select(x => x.Picture).ToList(),
+                    CoverImage = product.Image.FirstOrDefault().Picture,
+                    Discount = product.Discount
                 };
 
                 productsDto.Add(productDto);
@@ -111,48 +154,86 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
         }
 
 
-        public List<ProductDto> GetAllShoes(int genderId)
+        public int GetShoesCount(string searchString, int genderId, List<int> brandsId)
         {
 
-            var products = UnitOfWork.Products.Get().ToList();
-            var copy = new List<Product>();
+            var products = UnitOfWork.Products
+                 .Get()
+                 .Include(x => x.Brand)
+                 .Include(x => x.Category)
+                 .Include(x => x.Color)
+                 .Include(x => x.Image)
+                 .Where(x => x.Category.TypeId == 1 && x.Category.GenderId == genderId)
+                 .ToList();
 
-            foreach (var item in products)
+
+            if (brandsId.Count > 0)
             {
+                products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
+            }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+            }
 
-                var type = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == item.CategoryId).TypeId;
-                var gender = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == item.CategoryId).GenderId;
-                if (type == 1 && gender == genderId)
-                {
-                    copy.Add(item);
-                }
+            return products.Count;
+        }
+
+        public List<ProductDto> GetAllShoes(int genderId, string searchString, int page, int pageSize, List<int> brandsId)
+        {
+            var products = new List<Product>();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = UnitOfWork.Products
+                    .Get()
+                    .Include(x => x.Brand)
+                    .Include(x => x.Category)
+                    .Include(x => x.Color)
+                    .Include(x => x.Image)
+                    .Where(x => x.Category.TypeId == 1 && x.Category.GenderId == genderId && x.Name.ToLower().Contains(searchString.ToLower()))
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+            }
+            else
+            {
+                products = UnitOfWork.Products
+                     .Get()
+                     .Include(x => x.Brand)
+                     .Include(x => x.Category)
+                     .Include(x => x.Color)
+                     .Include(x => x.Image)
+                     .Where(x => x.Category.TypeId == 1 && x.Category.GenderId == genderId)
+                     .Skip((page - 1) * pageSize)
+                     .Take(pageSize)
+                     .ToList();
+            }
+
+            if (brandsId.Count > 0)
+            {
+                products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
             }
 
 
             var productsDto = new List<ProductDto>();
 
-            foreach (var product in copy)
+            foreach (var product in products)
             {
-                var brand = UnitOfWork.Brands.Get().FirstOrDefault(x => x.Id == product.BrandId);
-                var Color = UnitOfWork.Colors.Get().FirstOrDefault(x => x.Id == product.ColorId);
-                var category = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == product.CategoryId);
-                var images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).ToList();
-                var coverImage = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.Id);
-
                 var productDto = new ProductDto
                 {
                     Id = product.Id,
                     Name = product.Name,
-                    BrandId = (int)product.BrandId,
+                    BrandId = product.BrandId,
                     Description = product.Description,
-                    Price = (double)product.Price,
-                    Brand = brand.Name,
-                    Color = Color.Name,
-                    Category = category.Name,
-                    CategoryId = (int)category.Id,
-                    Images = images.Select(x => x.Picture).ToList(),
-                    CoverImage = coverImage.Picture,
-                    Discount = (int)product.Discount
+                    Price = product.Price,
+                    Brand = product.Brand.Name,
+                    Color = product.Color.Name,
+                    Category = product.Category.Name,
+                    CategoryId = product.Category.Id,
+                    Images = product.Image.Select(x => x.Picture).ToList(),
+                    CoverImage = product.Image.FirstOrDefault().Picture,
+                    Discount = product.Discount
                 };
 
                 productsDto.Add(productDto);
@@ -163,75 +244,176 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
 
         public List<ProductDto> GetProductsByCategory(int Id)
         {
-           var products = UnitOfWork.Products.Get().Where(x => x.CategoryId == Id).ToList();
+            var products = UnitOfWork.Products
+                  .Get()
+                  .Where(x => x.CategoryId == Id)
+                  .Include(x => x.Brand)
+                  .Include(x => x.Category)
+                  .Include(x => x.Color)
+                  .Include(x => x.Image)
+                  .ToList();
 
             var productsDto = new List<ProductDto>();
 
             foreach (var product in products)
             {
-                var brand = UnitOfWork.Brands.Get().FirstOrDefault(x => x.Id == product.BrandId);
-                var Color = UnitOfWork.Colors.Get().FirstOrDefault(x => x.Id == product.ColorId);
-                var category = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == product.CategoryId);
-                var images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).ToList();
-                var coverImage = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.Id);
 
                 var productDto = new ProductDto
                 {
                     Id = product.Id,
                     Name = product.Name,
-                    BrandId = (int)product.BrandId,
+                    BrandId = product.BrandId,
                     Description = product.Description,
-                    Price = (double)product.Price,
-                    Brand = brand.Name,
-                    Color = Color.Name,
-                    Category = category.Name,
-                    CategoryId = (int)category.Id,
-                    Images = images.Select(x => x.Picture).ToList(),
-                    CoverImage = coverImage.Picture,
-                    Discount = (int)product.Discount
+                    Price = product.Price,
+                    Brand = product.Brand.Name,
+                    Color = product.Color.Name,
+                    Category = product.Category.Name,
+                    CategoryId = product.Category.Id,
+                    Images = product.Image.Select(x => x.Picture).ToList(),
+                    CoverImage = product.Image.FirstOrDefault().Picture,
+                    Discount = product.Discount
                 };
 
                 productsDto.Add(productDto);
             }
-            return productsDto; 
+            return productsDto;
         }
 
-        public List<ProductDto> GetProductsByGender(int Id)
+
+        public int GetGenderCount(string searchString, int genderId, List<int> brandsId)
         {
-            var products = UnitOfWork.Products.Get().ToList();
-            var productsDto = new List<ProductDto>();
-            var copy = new List<Product>();
-            foreach(var item in  products)
-            {
-                var genderId = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == item.CategoryId).GenderId; 
-                if(genderId == Id)
-                {
-                    copy.Add(item);
-                }
 
+            var products = UnitOfWork.Products
+                 .Get()
+                 .Include(x => x.Brand)
+                 .Include(x => x.Category)
+                 .Where(x => x.Category.GenderId == genderId)
+                 .ToList();
+
+
+            if (brandsId.Count > 0)
+            {
+                products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
             }
-            foreach (var product in copy)
+            if (!string.IsNullOrEmpty(searchString))
             {
-                var brand = UnitOfWork.Brands.Get().FirstOrDefault(x => x.Id == product.BrandId);
-                var Color = UnitOfWork.Colors.Get().FirstOrDefault(x => x.Id == product.ColorId);
-                var category = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == product.CategoryId);
-                var images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).ToList();
-                var coverImage = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.Id);
+                products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+            }
 
+            return products.Count;
+        }
+
+        public List<ProductDto> GetProuctsByGender(int genderId, string searchString, int page, int pageSize, List<int> brandsId)
+        {
+            var products = UnitOfWork.Products
+                .Get()
+                .Include(x => x.Brand)
+                .Include(x => x.Category)
+                .Include(x => x.Color)
+                .Include(x => x.Image)
+                .Where(x => x.Category.GenderId == genderId)
+                .ToList();
+
+           
+            if (brandsId.Count > 0)
+            {
+                products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
+            }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+            }
+
+
+            var productsDto = new List<ProductDto>();
+
+            foreach (var product in products)
+            {
                 var productDto = new ProductDto
                 {
                     Id = product.Id,
                     Name = product.Name,
-                    BrandId = (int)product.BrandId,
+                    BrandId = product.BrandId,
                     Description = product.Description,
-                    Price = (double)product.Price,
-                    Brand = brand.Name,
-                    Color = Color.Name,
-                    Category = category.Name,
-                    CategoryId = (int)category.Id,
-                    Images = images.Select(x => x.Picture).ToList(),
-                    CoverImage = coverImage.Picture,
-                    Discount = (int)product.Discount
+                    Price = product.Price,
+                    Brand = product.Brand.Name,
+                    Color = product.Color.Name,
+                    Category = product.Category.Name,
+                    CategoryId = product.Category.Id,
+                    Images = product.Image.Select(x => x.Picture).ToList(),
+                    CoverImage = product.Image.FirstOrDefault().Picture,
+                    Discount = product.Discount
+                };
+
+                productsDto.Add(productDto);
+            }
+            return productsDto;
+        }
+
+
+        public int GetCategoryCount(string searchString, int categoryrId, List<int> brandsId)
+        {
+
+            var products = UnitOfWork.Products
+                 .Get()
+                 .Include(x => x.Brand)
+                 .Include(x => x.Category)
+                 .Where(x => x.Category.Id == categoryrId)
+                 .ToList();
+
+
+            if (brandsId.Count > 0)
+            {
+                products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
+            }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+            }
+
+            return products.Count;
+        }
+
+        public List<ProductDto> GetProuctsByCategory(int categoryId, string searchString, int page, int pageSize, List<int> brandsId)
+        {
+            var products = UnitOfWork.Products
+                .Get()
+                .Include(x => x.Brand)
+                .Include(x => x.Category)
+                .Include(x => x.Color)
+                .Include(x => x.Image)
+                .Where(x => x.Category.Id == categoryId)
+                .ToList();
+
+
+            if (brandsId.Count > 0)
+            {
+                products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
+            }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+            }
+
+
+            var productsDto = new List<ProductDto>();
+
+            foreach (var product in products)
+            {
+                var productDto = new ProductDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    BrandId = product.BrandId,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Brand = product.Brand.Name,
+                    Color = product.Color.Name,
+                    Category = product.Category.Name,
+                    CategoryId = product.Category.Id,
+                    Images = product.Image.Select(x => x.Picture).ToList(),
+                    CoverImage = product.Image.FirstOrDefault().Picture,
+                    Discount = product.Discount
                 };
 
                 productsDto.Add(productDto);
@@ -305,13 +487,13 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
-                Price = (double)product.Price,
+                Price = product.Price,
                 Brand = UnitOfWork.Brands.Get().FirstOrDefault(x => x.Id == product.BrandId).Name,
                 Color = UnitOfWork.Colors.Get().FirstOrDefault(x => x.Id == product.ColorId).Name,
                 Category = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == product.CategoryId).Name,
                 Images = UnitOfWork.ProductImages.Get().Where(x => x.ProductId == product.Id).Select(x => x.Picture).ToList(),
                 CoverImage = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.Id).Picture,
-                Discount = (int)product.Discount
+                Discount = product.Discount
             };
             return productDto;
 
@@ -320,7 +502,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
         public EditProductDto GetEditProductDto(Guid id)
         {
             var product = UnitOfWork.Products.Get().FirstOrDefault(x => x.Id == id);
-            if(product == null)
+            if (product == null)
             {
                 throw new Exception("Product not found");
             }
@@ -330,7 +512,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 Name = product.Name,
                 Description = product.Description,
                 Price = (double)product.Price,
-                Discount = (int)product.Discount,
+                Discount = product.Discount,
 
             };
             return editProductDto;
@@ -394,9 +576,9 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
 
         public void AddProductToCart(Guid productId, int measureId)
         {
-            
+
             var productInShoppingCart = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
-            if(currentUser == null)
+            if (currentUser == null)
             {
                 throw new Exception("You must be logged in to add products to cart");
             }

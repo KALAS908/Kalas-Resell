@@ -6,6 +6,7 @@ using OnlineStore.BusinessLogic.Implementation.Countries;
 using OnlineStore.BusinessLogic.Implementation.GenderImplementation;
 using OnlineStore.BusinessLogic.Implementation.MeasureImplementation;
 using OnlineStore.BusinessLogic.Implementation.NewFolder;
+using OnlineStore.BusinessLogic.Implementation.OrderImplementation;
 using OnlineStore.BusinessLogic.Implementation.Products;
 using OnlineStore.BusinessLogic.Implementation.TypeImplementation;
 using OnlineStore.Code;
@@ -33,6 +34,7 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
             services.AddScoped<ColorController>();
             services.AddScoped<MeasureController>();
             services.AddScoped<ShoppingCartController>();
+            services.AddScoped<OrderController>();
 
             return services;
         }
@@ -52,6 +54,7 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
             services.AddScoped<MeasureService>();
             services.AddScoped<ColorService>();
             services.AddScoped<ShoppingCartService>();
+            services.AddScoped<OrderService>();
             return services;
         }
 
@@ -66,16 +69,15 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
                 var claims = httpContext.User.Claims;
                 var Id = claims?.FirstOrDefault(c => c.Type == "Id")?.Value;
                 var Email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                var RoleId = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-   
+                var Role = claims?.FirstOrDefault(c => c.Type == "RoleId")?.Value;
+
                 var CurrentUser = new CurrentUserDto
                 {
                     IsAuthenticated = httpContext.User.Identity.IsAuthenticated,
                     Id = Id,
                     Email = Email,
-                    RoleId = RoleId,
-                    
-                    
+                    RoleId = Convert.ToInt32(Role),
+
                 };
 
                 return CurrentUser;

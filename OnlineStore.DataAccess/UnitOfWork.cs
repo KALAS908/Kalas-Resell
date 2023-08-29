@@ -73,6 +73,9 @@ namespace OnlineStore.DataAccess
         public IRepository<ProductMeasure> productMeasures;
         public IRepository<ProductMeasure> ProductMeasures => productMeasures ??= new BaseRepository<ProductMeasure>(Context);
 
+        public IRepository<OrderedItems> orders;
+        public IRepository<OrderedItems> Orders => orders ??= new BaseRepository<OrderedItems>(Context);
+
         public void SaveChanges()
         {
             Context.SaveChanges();

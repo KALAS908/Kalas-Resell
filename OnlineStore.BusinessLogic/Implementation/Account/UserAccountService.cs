@@ -12,6 +12,7 @@ using OnlineStore.Entities.Entities;
 using AutoMapper;
 using System.Security.Cryptography;
 using Polly.Utilities;
+using OnlineStore.Entities.Enums;
 
 namespace OnlineStore.BusinessLogic.Implementation.Account
 {
@@ -37,15 +38,18 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
                 FirstOrDefault(u => u.UserId == user.Id);
             var hashedPasswordInput = StringToHash(password + randomString.RandomString);
 
-            if (user.Password != hashedPasswordInput)
-            {
-                return new CurrentUserDto { IsAuthenticated = false };
-            }
 
             if (user == null)
             {
                 return new CurrentUserDto { IsAuthenticated = false };
             }
+
+            if (user.Password != hashedPasswordInput)
+            {
+                return new CurrentUserDto { IsAuthenticated = false };
+            }
+
+
 
             var CurrentUser = new CurrentUserDto
             {
@@ -53,7 +57,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                RoleId = user.RoleId.ToString(),
+                RoleId = (int)user.RoleId,
                 CountryId = user.CountryId.ToString(),
                 UserName = user.UserName,
                 IsAuthenticated = true
@@ -82,6 +86,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             UnitOfWork.Users.Insert(user);
             UnitOfWork.UsersStrings.Insert(userString);
 
+
+
             UnitOfWork.SaveChanges();
         }
 
@@ -90,17 +96,17 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
         {
             using (SHA256 sha256 = SHA256.Create())
             {
-                // Convert input string to bytes
+
                 byte[] inputBytes = Encoding.UTF8.GetBytes(input);
 
-                // Compute hash
+
                 byte[] hashBytes = sha256.ComputeHash(inputBytes);
 
-                // Convert hash bytes to hexadecimal representation
+
                 StringBuilder builder = new StringBuilder();
                 foreach (byte b in hashBytes)
                 {
-                    builder.Append(b.ToString("x2")); // "x2" formats as hexadecimal with 2 digits
+                    builder.Append(b.ToString("x2"));
                 }
 
                 return builder.ToString();
@@ -213,28 +219,43 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
         }
 
 
-        public int GetUserCount( string searchString)
+        public int GetUserCount(string searchString)
         {
-           if(!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
-                return UnitOfWork.Users.Get().Where(x => x.FirstName.ToLower().Contains(searchString.ToLower()) || x.LastName.ToLower().Contains(searchString.ToLower()) || x.Email.ToLower().Contains(searchString.ToLower()) || x.UserName.ToLower().Contains(searchString.ToLower())).Count();
+                return UnitOfWork.Users.Get().Where(x => x.FirstName.ToLower().Contains(searchString.ToLower()) ||
+                x.LastName.ToLower().Contains(searchString.ToLower()) ||
+                x.Email.ToLower().Contains(searchString.ToLower()) ||
+                x.UserName.ToLower().Contains(searchString.ToLower()))
+                    .Count();
             }
             return UnitOfWork.Users.Get().Count();
         }
 
-        public List<UserDto> GetAllUsers(string searchString, int pageSize,int page )
+        public IEnumerable<UserDto> GetAllUsers(string searchString, int pageSize, int page)
         {
 
-            var users = UnitOfWork.Users
-                .Get()
-                .Skip((page-1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
+            var users = new List<User>();
             if (!string.IsNullOrEmpty(searchString))
             {
-                users = users.Where(x => x.FirstName.ToLower().Contains(searchString.ToLower()) || x.LastName.ToLower().Contains(searchString.ToLower()) || x.Email.ToLower().Contains(searchString.ToLower()) || x.UserName.ToLower().Contains(searchString.ToLower())).ToList();
+                users = UnitOfWork.Users
+              .Get()
+              .Where(x => x.FirstName.ToLower().Contains(searchString.ToLower()) || x.LastName.ToLower().Contains(searchString.ToLower()) || x.Email.ToLower().Contains(searchString.ToLower()) || x.UserName.ToLower().Contains(searchString.ToLower()))
+              .Skip((page - 1) * pageSize)
+              .Take(pageSize)
+              .ToList();
+
             }
+            else
+            {
+                users = UnitOfWork.Users
+                   .Get()
+                   .Skip((page - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+
+
             var usersDto = new List<UserDto>();
             foreach (var item in users)
             {
@@ -254,7 +275,6 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
 
         public void DeleteUser(Guid Id)
         {
-
             var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == Id);
             if (user != null)
             {
@@ -263,12 +283,20 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             }
         }
 
+
+        public void DeleteAccount()
+        {
+            var currentUser = CurrentUser;
+            var user = UnitOfWork.Users.Get().FirstOrDefault(u => u.Id.ToString() == currentUser.Id);
+            UnitOfWork.Users.Delete(user);
+            UnitOfWork.SaveChanges();
+        }
         public void MakeAdmin(Guid Id)
         {
             var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == Id);
             if (user != null)
             {
-                user.RoleId = 1;
+                user.RoleId = (int)RolesEnum.Admin;
                 UnitOfWork.Users.Update(user);
                 UnitOfWork.SaveChanges();
             }
@@ -278,10 +306,26 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == Id);
             if (user != null)
             {
-                user.RoleId = 2;
+                user.RoleId = (int)RolesEnum.User;
                 UnitOfWork.Users.Update(user);
                 UnitOfWork.SaveChanges();
             }
+        }
+
+        public List<OrderDto> GetUserOrders()
+        {
+            var orders = UnitOfWork.Receipts.Get().Where(x => x.UserId.ToString() == CurrentUser.Id).ToList();
+            var ordersDto = new List<OrderDto>();
+            foreach (var item in orders)
+            {
+                var orderDto = new OrderDto
+                {
+                    Id = item.Id,
+                    TotalPrice = (double)item.TotalPrice,
+                };
+                ordersDto.Add(orderDto);
+            }
+            return ordersDto;
         }
     }
 
