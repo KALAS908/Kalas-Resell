@@ -13,6 +13,7 @@ using AutoMapper;
 using System.Security.Cryptography;
 using Polly.Utilities;
 using OnlineStore.Entities.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineStore.BusinessLogic.Implementation.Account
 {
@@ -218,6 +219,29 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             return ShoppingCartDto;
         }
 
+        public IEnumerable<WishListDto> GetUserWishList()
+        {
+            var currentUser = CurrentUser;
+            var WishListProducts = UnitOfWork.WishLists.Get()
+                .Include(x => x.Product)
+                .Where(s => s.UserId.ToString() == currentUser.Id)
+                .ToList();
+            var WishListDto = new List<WishListDto>();
+
+            foreach (var product in WishListProducts)
+            {var image = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.ProductId);
+                var productDto = new WishListDto
+                {
+                    ProductId = product.ProductId,
+                    ProductName = product.Product.Name,
+                    ProductPrice = (double)product.Product.Price,
+                    ProductImage = image.Picture,
+                    ProductDiscount = (int)product.Product.Discount
+                };
+                WishListDto.Add(productDto);
+            }
+            return WishListDto;
+        }
 
         public int GetUserCount(string searchString)
         {

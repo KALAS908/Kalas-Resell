@@ -236,13 +236,14 @@ namespace OnlineStore.WebApp.Controllers
         [HttpPost]
         public IActionResult AddProductMeasure(MeasureQuantityModel model)
         {
+            string referringUrl = Request.Headers["Referer"].ToString();
             if (model == null)
             {
                 return View("Error_NotFound");
             }
 
             ProductService.AddProductMeasure(model);
-            return RedirectToAction("ProductsView", "Product");
+            return Redirect(referringUrl);
         }
 
 
@@ -273,7 +274,7 @@ namespace OnlineStore.WebApp.Controllers
             }
 
             ProductService.EditProduct(model);
-            return RedirectToAction("ProductsView", "Product");
+            return RedirectToAction("ProductDetails", "Product", new { id = model.Id });
         }
 
         [HttpPost]
@@ -292,5 +293,44 @@ namespace OnlineStore.WebApp.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult AddProductToWishList(Guid productId)
+        {
+            try
+            {
+
+                if (currentUser.IsAuthenticated)
+                {
+                    ProductService.AddProductToWishList(productId);
+                    return Ok("Product added to wishlist successfully.");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "UserAccount");
+
+                }
+            }
+            catch (System.Exception)
+            {
+                return BadRequest("Product already in wishlist.");
+
+            }
+
+        }
+        [HttpPost]
+        public IActionResult RemoveFromWishList(Guid productId)
+        {
+            try
+            {
+                ProductService.RemoveProductFromWishList(productId);
+                return Ok("Product removed from wishlist successfully.");
+            }
+            catch (System.Exception)
+            {
+                return BadRequest("Product already removed from wishlist.");
+
+            }
+
+        }
     }
 }

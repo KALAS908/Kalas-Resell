@@ -26,7 +26,8 @@
 
 
 .footer {
-    display: flex;
     bottom: 0;
+    height :5vh;
     width: 100%;
+    position : absolute;
 }

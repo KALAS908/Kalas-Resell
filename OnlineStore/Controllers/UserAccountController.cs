@@ -156,6 +156,13 @@ namespace OnlineStore.WebApp.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult WishList()
+        {
+
+            var model = UserAccountService.GetUserWishList();
+            return View(model);
+        }
 
         public IActionResult DeleteByAdmin(Guid UserId)
         {

@@ -314,7 +314,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 .Where(x => x.Category.GenderId == genderId)
                 .ToList();
 
-           
+
             if (brandsId.Count > 0)
             {
                 products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
@@ -435,7 +435,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
 
             foreach (var image in images)
             {
-                var picture = new Image();
+
                 using (var ms = new MemoryStream())
                 {
                     image.CopyTo(ms);
@@ -461,9 +461,11 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
 
             foreach (var image in productImages)
             {
+
+
+
                 var picture = new Image
                 {
-
                     Picture = image,
                     ProductId = product.Id
                 };
@@ -600,6 +602,49 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 };
 
                 UnitOfWork.ShoppingCarts.Insert(product);
+                UnitOfWork.SaveChanges();
+            }
+        }
+
+        public void AddProductToWishList(Guid productId)
+        {
+            var product = UnitOfWork.WishLists.Get().FirstOrDefault(x => x.ProductId == productId && x.UserId.ToString() == currentUser.Id);
+            if (currentUser == null)
+            {
+                throw new Exception("You must be logged in to add products to wishlist");
+            }
+            if (product != null)
+            {
+                throw new Exception("Product already in wishlist");
+            }
+            else
+            {
+                var productWishList = new WishList
+                {
+                    UserId = new Guid(currentUser.Id),
+                    ProductId = productId,
+                };
+
+                UnitOfWork.WishLists.Insert(productWishList);
+                UnitOfWork.SaveChanges();
+            }
+        }
+
+        public void RemoveProductFromWishList(Guid productId)
+        {
+            var product = UnitOfWork.WishLists.Get().FirstOrDefault(x => x.ProductId == productId && x.UserId.ToString() == currentUser.Id);
+
+            if (currentUser == null)
+            {
+                throw new Exception("You must be logged in to remove products from wishlist");
+            }
+            if (product == null)
+            {
+                throw new Exception("Product not found in wishlist");
+            }
+            else
+            {
+                UnitOfWork.WishLists.Delete(product);
                 UnitOfWork.SaveChanges();
             }
         }

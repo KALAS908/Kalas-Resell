@@ -137,8 +137,9 @@
                     @if (CurrentUser.IsAuthenticated)
                     {
                         <a href="@Url.Action("Profile", "UserAccount", new { id = CurrentUser.Id })" class="text-decoration-none text-white"><i class="bi bi-person-circle"></i></a>
-                        <a asp-controller="UserAccount" asp-action="ShoppingCart" style="color: white"><i class="bi bi-cart-fill"></i></a>
-                        <a asp-controller="UserAccount" asp-action="Logout" style="color: white">Log out</a>
+                        <a asp-controller="UserAccount" asp-action="ShoppingCart" style="color: white ;text-decoration :none "> <i class="bi bi-cart-fill"></i></a>
+                        <a asp-controller="UserAccount" asp-action="WishList" style="color: white"><i class="bi bi-heart-fill"></i></a>
+                        <a asp-controller="UserAccount" asp-action="Logout" style="color: white"> <i class="bi bi-box-arrow-right"></i>Log out</a>
 
                     }
                     else

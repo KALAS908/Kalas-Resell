@@ -26,6 +26,17 @@
         background-color: #f9f9f9;
     }
 
+    .card-body img {
+        width: 15vw;
+        height: 20vh;
+        object-fit: contain;
+    }
+
+    .page-link {
+        color: white;
+        background-color: darkslategray; 
+    }
+
 </style>
 @using (Html.BeginForm("ShoesView", "Product", new { genderId = ViewBag.GenderId }, FormMethod.Get))
 {
@@ -72,7 +83,7 @@
                             <p class="card-text">@($"Price: {product.Price - (product.Price * product.Discount) / 100} USD")</p>
                         }
 
-                        <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="btn btn-dark">Product Info </a>
+                        <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="btn btn-dark stretched-link">Product Info </a>
 
 
                     </div>
@@ -83,7 +94,7 @@
 
 </div>
 <div class="pagiantion-container">
-    <ul class="pagination">
+    <ul class="pagination justify-content-center">
 
         @if (ViewBag.Page != 1 && ViewBag.ModelCount != 0)
         {
@@ -94,7 +105,7 @@
         else
         {
             <li class="page-item disabled">
-                <a class="page-link"  href="@Url.Action("ShoesView", "Product", new {genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page - 1 , selectedBrands =ViewBag.SelectedBrands }) ">Previous</a>
+                <a class="page-link" href="@Url.Action("ShoesView", "Product", new {genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page - 1 , selectedBrands =ViewBag.SelectedBrands }) ">Previous</a>
             </li>
         }
 
@@ -102,13 +113,13 @@
         @for (int i = 1; i <= ViewBag.PageCount; i++)
         {
             <li class="page-item @(ViewBag.Page == i ? "active" : "")">
-                <a class="page-link" style="background-color:darkslategray;"  href="@Url.Action("ShoesView", "Product", new {genderId = ViewBag.GenderId , searchString = ViewBag.SearchString , page = i , selectedBrands =ViewBag.SelectedBrands})">@i</a>
+                <a class="page-link" href="@Url.Action("ShoesView", "Product", new {genderId = ViewBag.GenderId , searchString = ViewBag.SearchString , page = i , selectedBrands =ViewBag.SelectedBrands})">@i</a>
             </li>
         }
 
         @if (ViewBag.Page != ViewBag.PageCount && ViewBag.ModelCount != 0)
         {
-            <li>
+            <li class="page-item">
                 <a class="page-link" href="@Url.Action("ShoesView", "Product", new { genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page + 1 , selectedBrands =ViewBag.SelectedBrands})">Next</a>
             </li>
         }

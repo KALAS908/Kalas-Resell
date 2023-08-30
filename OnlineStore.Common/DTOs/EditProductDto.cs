@@ -15,7 +15,7 @@ namespace OnlineStore.Common.DTOs
         public int BrandId { get; set; }
         public int MeasureId { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
         public double Price { get; set; }
         public int CategoryId { get; set; }
         public int TypeOfClothingId { get; set; }
