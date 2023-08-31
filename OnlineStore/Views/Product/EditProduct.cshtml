@@ -1,13 +1,11 @@
 ﻿@model OnlineStore.Common.DTOs.EditProductDto
-
-
 @{
     ViewData["Title"] = "View";
 
 }
 <link rel="stylesheet" href="~/css/PicturesGrid.css" />
 
-<h1>Create Product</h1>
+<h1>Edit Product</h1>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="EditProduct" asp-controller="Product" enctype="multipart/form-data">
@@ -30,7 +28,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">$</span>
                         </div>
-                        <input asp-for="Price" class="form-control" />  @*aria-label="Amount (to the nearest dollar)"*@
+                        <input asp-for="Price" class="form-control" />
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                 </div>
@@ -44,7 +42,7 @@
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-success" />
-                <a class="btn btn-warning" asp-area="" asp-controller="Product" asp-action="ProductsView">Cancel</a>
+                <a href="@Url.Action("ProductDetails", "Product", new { id = Model.Id })" class="btn btn-warning">Cancel</a>
             </div>
         </form>
     </div>

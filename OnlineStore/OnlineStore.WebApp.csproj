@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\NewFolder\" />
+    <Folder Include="Views\AdminViews\" />
   </ItemGroup>
 
 </Project>

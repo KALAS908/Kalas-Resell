@@ -648,5 +648,31 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 UnitOfWork.SaveChanges();
             }
         }
+        public IEnumerable<ProductRankingDto> GetTopProducts()
+        {
+            var products = UnitOfWork.OrderedProducts.Get()
+                .GroupBy(x => x.ProductId)
+                .Select(x => new { ProductId = x.Key, TotalQuantity = x.Sum(y => y.Quantity) })
+                .OrderByDescending(x => x.TotalQuantity)
+                .Take(10)
+                .ToList();
+
+            var productsDto = new List<ProductRankingDto>();
+            foreach (var item in products)
+            {
+                var product = UnitOfWork.Products.Get().FirstOrDefault(x => x.Id == item.ProductId);
+                var image = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.Id);
+                var productDto = new ProductRankingDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    CoverImage = image.Picture,
+                    Quantity = (int)item.TotalQuantity
+                };
+                productsDto.Add(productDto);
+            }
+            return productsDto;
+        }
     }
 }

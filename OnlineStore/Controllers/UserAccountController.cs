@@ -29,6 +29,8 @@ namespace OnlineStore.WebApp.Controllers
         {
             double pagesize = 15;
 
+            var top10 = UserAccountService.GetTopUsers();
+
 
             ViewBag.Page = page;
             if (ViewBag.page == null)
@@ -216,6 +218,21 @@ namespace OnlineStore.WebApp.Controllers
         {
             var model = UserAccountService.GetUserOrders();
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Top10Users()
+        {
+            var model = UserAccountService.GetTopUsers();
+            return View(model);
+        }
+
+        
+
+        [HttpGet]
+        public IActionResult Medals()
+        {
+            return View();
         }
     }
 }

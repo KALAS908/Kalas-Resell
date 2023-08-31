@@ -4,7 +4,6 @@
     ViewBag.Title = "ProductsView";
 
 }
-
 <style>
     .footer {
         position: absolute;
@@ -123,6 +122,15 @@
                                             </li>
                                             <li>
                                                 <a class="dropdown-item" href="@Url.Action("AllUsers", "UserAccount" , new {page = 1})">Users</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("Top10Users", "UserAccount")">Top Users</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("Top10Products", "Product")">Top Products</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("Medals", "UserAccount")">Medals</a>
                                             </li>
                                         </ul>
                                     </li>

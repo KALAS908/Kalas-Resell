@@ -43,12 +43,11 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProductsView()
+        public IActionResult Top10Products()
         {
-            var model = ProductService.GetAllProducts();
-            return View("ProductsView", model);
+            var model = ProductService.GetTopProducts();
+            return View(model);
         }
-
         [HttpGet]
         public IActionResult Create()
         {

@@ -229,7 +229,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             var WishListDto = new List<WishListDto>();
 
             foreach (var product in WishListProducts)
-            {var image = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.ProductId);
+            {
+                var image = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.ProductId);
                 var productDto = new WishListDto
                 {
                     ProductId = product.ProductId,
@@ -351,7 +352,40 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             }
             return ordersDto;
         }
+
+
+        public IEnumerable<RankingDto> GetTopUsers()
+        {
+            var users = UnitOfWork.Receipts.Get()
+                .GroupBy(x => x.UserId)
+                .Select(x => new { UserId = x.Key, TotalPrice = x.Sum(y => y.TotalPrice) })
+                .OrderByDescending(x => x.TotalPrice)
+                .Take(10)
+                .ToList();
+
+            var usersDto = new List<RankingDto>();
+            foreach (var item in users)
+            {
+                var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == item.UserId);
+                var userDto = new RankingDto
+                {
+                    UserId = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    Role = UnitOfWork.Roles.Get().FirstOrDefault(r => r.Id == user.RoleId).Role1,
+                    TotalPrice = (double)item.TotalPrice
+                };
+                usersDto.Add(userDto);
+            }
+            return usersDto;
+        }
+
+
     }
+
+
 
 }
 
