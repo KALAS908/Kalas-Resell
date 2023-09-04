@@ -74,129 +74,130 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpGet("/Prduct/ClothesView/")]
-        public IActionResult ClothesView(int genderId, string searchString, int? page, string selectedBrands)
+        public IActionResult ClothesView(int genderId, string searchString, int? page, string selectedBrands, int maxPrice, string selectedMeasures)
         {
-            var brandsId = new List<int>();
-            if (selectedBrands != null)
+
+            if (maxPrice == 0)
             {
-                var brands = selectedBrands.Split(',');
-                foreach (var brand in brands)
-                {
-                    if (brand != "")
-                    {
-                        brandsId.Add(int.Parse(brand));
-                    }
-                }
+                maxPrice = 10000;
             }
-            double pagesize = 15;
             if (page == null)
             {
                 page = 1;
             }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.Trim();
+            }
+            var measuresId = ProductService.TransformStringToInt(selectedMeasures);
+            var brandsId = ProductService.TransformStringToInt(selectedBrands);
+            double pagesize = 15;
+            ViewBag.SelectedMeasures = selectedMeasures;
+            ViewBag.MaxPrice = maxPrice;
             ViewBag.Page = page;
             ViewBag.SearchString = searchString;
             ViewBag.PageSize = pagesize;
             ViewBag.GenderId = genderId;
             ViewBag.SelectedBrands = selectedBrands;
-            var model = ProductService.GetAllClothes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId);
-            ViewBag.ModelCount = ProductService.GetClothesCount(searchString, genderId, brandsId);
+            var model = ProductService.GetAllClothes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId, maxPrice, measuresId);
+            ViewBag.ModelCount = ProductService.GetClothesCount(searchString, genderId, brandsId, maxPrice, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
             return View(model);
         }
 
         [HttpGet("/Prduct/ShoesView/")]
-        public ViewResult ShoesView(int genderId, string searchString, int? page, string selectedBrands)
+        public ViewResult ShoesView(int genderId, string searchString, int? page, string selectedBrands, int maxPrice, string selectedMeasures)
         {
-
-            var brandsId = new List<int>();
-            if (selectedBrands != null)
+            if (maxPrice == 0)
             {
-                var brands = selectedBrands.Split(',');
-                foreach (var brand in brands)
-                {
-                    if (brand != "")
-                    {
-                        brandsId.Add(int.Parse(brand));
-                    }
-                }
+                maxPrice = 10000;
             }
-            double pagesize = 15;
             if (page == null)
             {
                 page = 1;
             }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.Trim();
+            }
+            var price = maxPrice;
+            var measuresId = ProductService.TransformStringToInt(selectedMeasures);
+            var brandsId = ProductService.TransformStringToInt(selectedBrands);
+            double pagesize = 15;
+
+            ViewBag.MaxPrice = maxPrice;
             ViewBag.Page = page;
             ViewBag.SearchString = searchString;
             ViewBag.PageSize = pagesize;
             ViewBag.GenderId = genderId;
             ViewBag.SelectedBrands = selectedBrands;
-            var model = ProductService.GetAllShoes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId);
-            ViewBag.ModelCount = ProductService.GetShoesCount(searchString, genderId, brandsId);
+            ViewBag.SelectedMeasures = selectedMeasures;
+            var model = ProductService.GetAllShoes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId, price, measuresId);
+            ViewBag.ModelCount = ProductService.GetShoesCount(searchString, genderId, brandsId, price, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
             return View(model);
         }
 
         [HttpGet("/ProductByCategory/")]
-        public IActionResult CategoryView(int categoryId, string searchString, int? page, string selectedBrands)
+        public IActionResult CategoryView(int categoryId, string searchString, int? page, string selectedBrands, int maxPrice, string selectedMeasures)
         {
 
-            var brandsId = new List<int>();
-            if (selectedBrands != null)
+            if (maxPrice == 0)
             {
-                var brands = selectedBrands.Split(',');
-                foreach (var brand in brands)
-                {
-                    if (brand != "")
-                    {
-                        brandsId.Add(int.Parse(brand));
-                    }
-                }
+                maxPrice = 10000;
+            }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.Trim();
             }
             double pagesize = 15;
+            var measuresId = ProductService.TransformStringToInt(selectedMeasures);
+            var brandsId = ProductService.TransformStringToInt(selectedBrands);
             if (page == null)
             {
                 page = 1;
             }
+            ViewBag.SelectedMeasures = selectedMeasures;
+            ViewBag.MaxPrice = maxPrice;
             ViewBag.Page = page;
             ViewBag.SearchString = searchString;
             ViewBag.PageSize = pagesize;
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.CategoryId = categoryId;
-            var model = ProductService.GetProuctsByCategory(categoryId, searchString, ViewBag.page, (int)pagesize, brandsId);
-            ViewBag.ModelCount = ProductService.GetCategoryCount(searchString, categoryId, brandsId);
+            var model = ProductService.GetProuctsByCategory(categoryId, searchString, ViewBag.page, (int)pagesize, brandsId, maxPrice, measuresId);
+            ViewBag.ModelCount = ProductService.GetCategoryCount(searchString, categoryId, brandsId, maxPrice, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
             return View(model);
         }
 
 
         [HttpGet("/Product/GenderView/")]
-        public IActionResult GenderView(int genderId, string searchString, int? page, string selectedBrands)
-        {
-
-            var brandsId = new List<int>();
-            if (selectedBrands != null)
+        public IActionResult GenderView(int genderId, string searchString, int? page, string selectedBrands, int maxPrice, string selectedMeasures)
+        { ///strip
+            if (maxPrice == 0)
             {
-                var brands = selectedBrands.Split(',');
-                foreach (var brand in brands)
-                {
-                    if (brand != "")
-                    {
-                        brandsId.Add(int.Parse(brand));
-                    }
-                }
+                maxPrice = 10000;
             }
-            double pagesize = 15;
             if (page == null)
             {
                 page = 1;
             }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.Trim();
+            }
+            var measuresId = ProductService.TransformStringToInt(selectedMeasures);
+            var brandsId = ProductService.TransformStringToInt(selectedBrands);
+            double pagesize = 15;
+            ViewBag.SelectedMeasures = selectedMeasures;
+            ViewBag.MaxPrice = maxPrice;
             ViewBag.Page = page;
             ViewBag.SearchString = searchString;
             ViewBag.PageSize = pagesize;
             ViewBag.GenderId = genderId;
             ViewBag.SelectedBrands = selectedBrands;
-            var model = ProductService.GetProuctsByGender(genderId, searchString, ViewBag.page, (int)pagesize, brandsId);
-            ViewBag.ModelCount = ProductService.GetGenderCount(searchString, genderId, brandsId);
+            var model = ProductService.GetProuctsByGender(genderId, searchString, ViewBag.page, (int)pagesize, brandsId, maxPrice, measuresId);
+            ViewBag.ModelCount = ProductService.GetGenderCount(searchString, genderId, brandsId, maxPrice, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
             return View(model);
         }
@@ -330,6 +331,23 @@ namespace OnlineStore.WebApp.Controllers
 
             }
 
+        }
+
+        public IActionResult DeleteProduct(Guid id)
+        {
+            if (currentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+            }
+            try
+            {
+                ProductService.DeleteProduct(id);
+                return RedirectToAction("Index", "Home");
+            }
+            catch (System.Exception)
+            {
+                return View("Error_NotFound");
+            }
         }
     }
 }

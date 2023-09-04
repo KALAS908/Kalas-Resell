@@ -18,7 +18,6 @@
 .filter-container {
     position: sticky;
     top: 0;
-   
 }
 
 
@@ -137,8 +136,44 @@ input[type=range] {
     overflow-y: auto;
 }
 
+#measureList {
+    list-style: none;
+    padding: 0;
+}
+
+    #measureList li {
+        margin-bottom: 5px;
+    }
+
+    #measureList input[type="checkbox"] {
+        margin-right: 5px;
+    }
+
+    #measureList label {
+        display: inline-block;
+    }
+
+#measureList {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
 .footer {
-    display: flex;
+    position: relative;
+    bottom: 0;
+}
+
+.pagination-container {
+    position: relative;
     bottom: 0;
     width: 100%;
+    background-color: #f9f9f9;
+}
+
+.card-body img {
+    width: 15vw;
+    height: 20vh;
+    object-fit: contain;
 }

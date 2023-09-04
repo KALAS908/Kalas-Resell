@@ -26,8 +26,9 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
         public void IncreaseQuantity(Guid productId, string measure)
         {
 
-            var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
-            if (measureId == null)
+            var Measure = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure);
+            var measureId = Measure.Id;
+            if (measure == null)
             {
                 throw new Exception("Measure not found");
             }
@@ -49,11 +50,12 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
 
         public void DecreaseQuantity(Guid productId, string measure)
         {
-            var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
-            if (measureId == null)
+            var Measure = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure);
+            if (Measure == null)
             {
                 throw new Exception("Measure not found");
             }
+            var measureId = Measure.Id;
             var tem = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
             if (tem == null)
             {
@@ -84,11 +86,12 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
         public void RemoveFromDataBase(Guid productId, string measure, int quantity)
         {
 
-            var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
-            if (measureId == null)
+            var Measure = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure);
+            if (Measure == null)
             {
                 throw new Exception("Measure not found");
             }
+            var measureId = Measure.Id;
             var productMeasure = UnitOfWork.ProductMeasures.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId);
             if (productMeasure == null)
             {

@@ -65,7 +65,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             return productsDto;
         }
 
-        public int GetClothesCount(string searchString, int genderId, List<int> brandsId)
+        public int GetClothesCount(string searchString, int genderId, List<int> brandsId, int maxPrice, List<int> measuresId)
         {
 
             var products = UnitOfWork.Products
@@ -74,7 +74,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                  .Include(x => x.Category)
                  .Include(x => x.Color)
                  .Include(x => x.Image)
-                 .Where(x => x.Category.TypeId == 2 && x.Category.GenderId == genderId)
+                 .Include(x => x.ProductMeasure)
+                 .Where(x => x.Category.TypeId == 2 && x.Category.GenderId == genderId && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                  .ToList();
 
 
@@ -86,11 +87,15 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             {
                 products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
             }
+            if (measuresId.Count > 0)
+            {
+                products = products.Where(x => x.ProductMeasure.Any(y => measuresId.Contains(y.MeasureId))).ToList();
+            }
 
             return products.Count;
         }
 
-        public List<ProductDto> GetAllClothes(int genderId, string searchString, int page, int pageSize, List<int> brandsId)
+        public List<ProductDto> GetAllClothes(int genderId, string searchString, int page, int pageSize, List<int> brandsId, int maxPrice, List<int> measuresId)
         {
 
             var products = new List<Product>();
@@ -103,7 +108,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                     .Include(x => x.Category)
                     .Include(x => x.Color)
                     .Include(x => x.Image)
-                    .Where(x => x.Category.TypeId == 2 && x.Category.GenderId == genderId && x.Name.ToLower().Contains(searchString.ToLower()))
+                    .Include(x => x.ProductMeasure)
+                    .Where(x => x.Category.TypeId == 2 && x.Category.GenderId == genderId && x.Name.ToLower().Contains(searchString.ToLower()) && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToList();
@@ -116,7 +122,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                      .Include(x => x.Category)
                      .Include(x => x.Color)
                      .Include(x => x.Image)
-                     .Where(x => x.Category.TypeId == 2 && x.Category.GenderId == genderId)
+                     .Include(x => x.ProductMeasure)
+                     .Where(x => x.Category.TypeId == 2 && x.Category.GenderId == genderId && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                      .Skip((page - 1) * pageSize)
                      .Take(pageSize)
                      .ToList();
@@ -125,6 +132,10 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             if (brandsId.Count > 0)
             {
                 products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
+            }
+            if (measuresId.Count > 0)
+            {
+                products = products.Where(x => x.ProductMeasure.Any(y => measuresId.Contains(y.MeasureId))).ToList();
             }
 
 
@@ -154,7 +165,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
         }
 
 
-        public int GetShoesCount(string searchString, int genderId, List<int> brandsId)
+        public int GetShoesCount(string searchString, int genderId, List<int> brandsId, int maxPrice, List<int> measuresId)
         {
 
             var products = UnitOfWork.Products
@@ -163,7 +174,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                  .Include(x => x.Category)
                  .Include(x => x.Color)
                  .Include(x => x.Image)
-                 .Where(x => x.Category.TypeId == 1 && x.Category.GenderId == genderId)
+                 .Include(x => x.ProductMeasure)
+                 .Where(x => x.Category.TypeId == 1 && x.Category.GenderId == genderId && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                  .ToList();
 
 
@@ -175,11 +187,14 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             {
                 products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
             }
-
+            if (measuresId.Count > 0)
+            {
+                products = products.Where(x => x.ProductMeasure.Any(y => measuresId.Contains(y.MeasureId))).ToList();
+            }
             return products.Count;
         }
 
-        public List<ProductDto> GetAllShoes(int genderId, string searchString, int page, int pageSize, List<int> brandsId)
+        public List<ProductDto> GetAllShoes(int genderId, string searchString, int page, int pageSize, List<int> brandsId, int maxPrice, List<int> measuresId)
         {
             var products = new List<Product>();
 
@@ -191,7 +206,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                     .Include(x => x.Category)
                     .Include(x => x.Color)
                     .Include(x => x.Image)
-                    .Where(x => x.Category.TypeId == 1 && x.Category.GenderId == genderId && x.Name.ToLower().Contains(searchString.ToLower()))
+                    .Include(x => x.ProductMeasure)
+                    .Where(x => x.Category.TypeId == 1 && x.Category.GenderId == genderId && x.Name.ToLower().Contains(searchString.ToLower()) && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToList();
@@ -204,7 +220,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                      .Include(x => x.Category)
                      .Include(x => x.Color)
                      .Include(x => x.Image)
-                     .Where(x => x.Category.TypeId == 1 && x.Category.GenderId == genderId)
+                     .Include(x => x.ProductMeasure)
+                     .Where(x => x.Category.TypeId == 1 && x.Category.GenderId == genderId && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                      .Skip((page - 1) * pageSize)
                      .Take(pageSize)
                      .ToList();
@@ -214,6 +231,11 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             {
                 products = products.Where(x => brandsId.Contains(x.BrandId)).ToList();
             }
+            if (measuresId.Count > 0)
+            {
+                products = products.Where(x => x.ProductMeasure.Any(y => measuresId.Contains(y.MeasureId))).ToList();
+            }
+
 
 
             var productsDto = new List<ProductDto>();
@@ -242,52 +264,15 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
         }
 
 
-        public List<ProductDto> GetProductsByCategory(int Id)
-        {
-            var products = UnitOfWork.Products
-                  .Get()
-                  .Where(x => x.CategoryId == Id)
-                  .Include(x => x.Brand)
-                  .Include(x => x.Category)
-                  .Include(x => x.Color)
-                  .Include(x => x.Image)
-                  .ToList();
-
-            var productsDto = new List<ProductDto>();
-
-            foreach (var product in products)
-            {
-
-                var productDto = new ProductDto
-                {
-                    Id = product.Id,
-                    Name = product.Name,
-                    BrandId = product.BrandId,
-                    Description = product.Description,
-                    Price = product.Price,
-                    Brand = product.Brand.Name,
-                    Color = product.Color.Name,
-                    Category = product.Category.Name,
-                    CategoryId = product.Category.Id,
-                    Images = product.Image.Select(x => x.Picture).ToList(),
-                    CoverImage = product.Image.FirstOrDefault().Picture,
-                    Discount = product.Discount
-                };
-
-                productsDto.Add(productDto);
-            }
-            return productsDto;
-        }
-
-
-        public int GetGenderCount(string searchString, int genderId, List<int> brandsId)
+        public int GetGenderCount(string searchString, int genderId, List<int> brandsId, int maxPrice, List<int> measuresId)
         {
 
             var products = UnitOfWork.Products
                  .Get()
                  .Include(x => x.Brand)
                  .Include(x => x.Category)
-                 .Where(x => x.Category.GenderId == genderId)
+                 .Include(x => x.ProductMeasure)
+                 .Where(x => x.Category.GenderId == genderId && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                  .ToList();
 
 
@@ -299,19 +284,23 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             {
                 products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
             }
-
+            if (measuresId.Count > 0)
+            {
+                products = products.Where(x => x.ProductMeasure.Any(y => measuresId.Contains(y.MeasureId))).ToList();
+            }
             return products.Count;
         }
 
-        public List<ProductDto> GetProuctsByGender(int genderId, string searchString, int page, int pageSize, List<int> brandsId)
+        public List<ProductDto> GetProuctsByGender(int genderId, string searchString, int page, int pageSize, List<int> brandsId, int maxPrice, List<int> measuresId)
         {
             var products = UnitOfWork.Products
                 .Get()
                 .Include(x => x.Brand)
                 .Include(x => x.Category)
                 .Include(x => x.Color)
+                .Include(x => x.ProductMeasure)
                 .Include(x => x.Image)
-                .Where(x => x.Category.GenderId == genderId)
+                .Where(x => x.Category.GenderId == genderId && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                 .ToList();
 
 
@@ -322,6 +311,10 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             if (!string.IsNullOrEmpty(searchString))
             {
                 products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+            }
+            if (measuresId.Count > 0)
+            {
+                products = products.Where(x => x.ProductMeasure.Any(y => measuresId.Contains(y.MeasureId))).ToList();
             }
 
 
@@ -351,14 +344,15 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
         }
 
 
-        public int GetCategoryCount(string searchString, int categoryrId, List<int> brandsId)
+        public int GetCategoryCount(string searchString, int categoryrId, List<int> brandsId, int maxPrice, List<int> measuresId)
         {
 
             var products = UnitOfWork.Products
                  .Get()
                  .Include(x => x.Brand)
                  .Include(x => x.Category)
-                 .Where(x => x.Category.Id == categoryrId)
+                 .Include(x => x.ProductMeasure)
+                 .Where(x => x.Category.Id == categoryrId && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                  .ToList();
 
 
@@ -370,11 +364,16 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             {
                 products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
             }
+            if (measuresId.Count > 0)
+            {
+                products = products.Where(x => x.ProductMeasure.Any(y => measuresId.Contains(y.MeasureId))).ToList();
+            }
+
 
             return products.Count;
         }
 
-        public List<ProductDto> GetProuctsByCategory(int categoryId, string searchString, int page, int pageSize, List<int> brandsId)
+        public List<ProductDto> GetProuctsByCategory(int categoryId, string searchString, int page, int pageSize, List<int> brandsId, int maxPrice, List<int> measuresId)
         {
             var products = UnitOfWork.Products
                 .Get()
@@ -382,7 +381,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 .Include(x => x.Category)
                 .Include(x => x.Color)
                 .Include(x => x.Image)
-                .Where(x => x.Category.Id == categoryId)
+                .Include(x => x.ProductMeasure)
+                .Where(x => x.Category.Id == categoryId && (x.Price - x.Price * x.Discount / 100) <= maxPrice)
                 .ToList();
 
 
@@ -393,6 +393,10 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             if (!string.IsNullOrEmpty(searchString))
             {
                 products = products.Where(x => x.Name.ToLower().Contains(searchString.ToLower())).ToList();
+            }
+            if (measuresId.Count > 0)
+            {
+                products = products.Where(x => x.ProductMeasure.Any(y => measuresId.Contains(y.MeasureId))).ToList();
             }
 
 
@@ -650,6 +654,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
         }
         public IEnumerable<ProductRankingDto> GetTopProducts()
         {
+
             var products = UnitOfWork.OrderedProducts.Get()
                 .GroupBy(x => x.ProductId)
                 .Select(x => new { ProductId = x.Key, TotalQuantity = x.Sum(y => y.Quantity) })
@@ -673,6 +678,17 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 productsDto.Add(productDto);
             }
             return productsDto;
+        }
+
+
+        public List<int> TransformStringToInt(string Anything)
+        {
+            if(Anything == null)
+            {
+                return new List<int>();
+            }
+            var vect = Anything.Split(',').Select(int.Parse).ToList();
+            return vect;
         }
     }
 }

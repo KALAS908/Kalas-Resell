@@ -73,7 +73,7 @@ namespace OnlineStore.WebApp.Controllers
             LoginModel loginModel = new LoginModel();
             loginModel.Email = model.Email;
             loginModel.Password = model.Password;
-            Login(loginModel);
+            _ = Login(loginModel);
             return RedirectToAction("Index", "Home");
         }
 
@@ -182,7 +182,7 @@ namespace OnlineStore.WebApp.Controllers
         {
 
             UserAccountService.DeleteAccount();
-            Logout();
+            _ = Logout();
             return RedirectToAction("Index", "Home");
         }
 

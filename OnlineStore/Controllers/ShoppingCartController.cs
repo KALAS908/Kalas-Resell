@@ -13,7 +13,7 @@ namespace OnlineStore.WebApp.Controllers
     public class ShoppingCartController : BaseController
     {
         public readonly ShoppingCartService ShoppingCartService;
-        public readonly CurrentUserDto CurrentUser;
+        public new readonly CurrentUserDto CurrentUser;
         public readonly UserAccountService UserAccountService;
         public ShoppingCartController(ControllerDependencies dependencies, ShoppingCartService shoppingCartService, UserAccountService userAccountService) : base(dependencies)
         {

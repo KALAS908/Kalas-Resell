@@ -358,7 +358,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
         {
             var users = UnitOfWork.Receipts.Get()
                 .GroupBy(x => x.UserId)
-                .Select(x => new { UserId = x.Key, TotalPrice = x.Sum(y => y.TotalPrice) })
+                .Select(x => new { UserId = x.Key, TotalPrice = x.Sum(y => y.TotalPrice ) })
                 .OrderByDescending(x => x.TotalPrice)
                 .Take(10)
                 .ToList();

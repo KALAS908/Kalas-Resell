@@ -111,8 +111,8 @@
             }
             <div class="form-group">
                 <label asp-for="MeasureId" class="control-label">Select Measure</label>
-                <select asp-for="MeasureId" class="form-control" id="productMeasureDropdown">
-                </select>
+                <select asp-for="MeasureId" class="form-control" id="productMeasureDropdown">  </select>  <span> <button onclick="AddToWishList()" class="btn btn-secondary"><i class="bi bi-heart"></i></button></span>
+               
                 <span asp-validation-for="MeasureId" class="text-danger"></span>
             </div>
             <div>

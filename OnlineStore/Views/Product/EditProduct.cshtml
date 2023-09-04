@@ -43,6 +43,7 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-success" />
                 <a href="@Url.Action("ProductDetails", "Product", new { id = Model.Id })" class="btn btn-warning">Cancel</a>
+                <a href="@Url.Action("DeleteProduct", "Product", new { id = Model.Id })" class="btn btn-danger">Delete</a>
             </div>
         </form>
     </div>

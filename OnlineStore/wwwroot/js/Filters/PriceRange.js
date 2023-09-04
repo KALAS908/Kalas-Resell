@@ -1,29 +1,8 @@
-﻿let minValue = document.getElementById("min-value");
-let maxValue = document.getElementById("max-value");
+﻿var slideCol = document.getElementById("id1");
+var y = document.getElementById("f");
+y.innerHTML = slideCol.value;
 
-function validateRange(minPrice, maxPrice) {
-    if (minPrice > maxPrice) {
-
-        let tempValue = maxPrice;
-        maxPrice = minPrice;
-        minPrice = tempValue;
-    }
-
-    minValue.innerHTML = "$" + minPrice;
-    maxValue.innerHTML = "$" + maxPrice;
+slideCol.oninput = function () {
+    y.innerHTML = this.value;
 }
-
-const inputElements = document.querySelectorAll("input");
-
-inputElements.forEach((element) => {
-    element.addEventListener("change", (e) => {
-        let minPrice = parseInt(inputElements[0].value);
-        let maxPrice = parseInt(inputElements[1].value);
-
-        validateRange(minPrice, maxPrice);
-    });
-});
-
-validateRange(inputElements[0].value, inputElements[1].value);
-
 

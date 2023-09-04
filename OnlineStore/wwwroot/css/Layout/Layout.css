@@ -24,10 +24,23 @@
     }
 
 
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
 
 .footer {
-    bottom: 0;
-    height :5vh;
-    width: 100%;
-    position : absolute;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    height : auto;
 }
