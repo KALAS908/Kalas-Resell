@@ -52,7 +52,7 @@
                     @if (CurrentUser.IsAuthenticated)
                     {
                         <a href="@Url.Action("Profile", "UserAccount", new { id = CurrentUser.Id })" class="btn btn-primary"><i class="bi bi-person-circle"></i></a>
-                        <a asp-controller="UserAccount" asp-action="ShoopingCart"><i class="bi bi-cart-fill"></i></a>
+                        <a asp-controller="UserAccount" asp-action="ShoppingCart"><i class="bi bi-cart-fill"></i></a>
                         <a asp-controller="UserAccount" asp-action="Logout">Log out</a>
                         
 

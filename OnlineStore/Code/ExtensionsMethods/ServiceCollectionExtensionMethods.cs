@@ -5,6 +5,7 @@ using OnlineStore.BusinessLogic.Implementation.ColorImplementation;
 using OnlineStore.BusinessLogic.Implementation.Countries;
 using OnlineStore.BusinessLogic.Implementation.GenderImplementation;
 using OnlineStore.BusinessLogic.Implementation.MeasureImplementation;
+using OnlineStore.BusinessLogic.Implementation.NewFolder;
 using OnlineStore.BusinessLogic.Implementation.Products;
 using OnlineStore.BusinessLogic.Implementation.TypeImplementation;
 using OnlineStore.Code;
@@ -31,6 +32,7 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
             services.AddScoped<TypeController>();
             services.AddScoped<ColorController>();
             services.AddScoped<MeasureController>();
+            services.AddScoped<ShoppingCartController>();
 
             return services;
         }
@@ -49,6 +51,7 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
             services.AddScoped<TypeService>();
             services.AddScoped<MeasureService>();
             services.AddScoped<ColorService>();
+            services.AddScoped<ShoppingCartService>();
             return services;
         }
 

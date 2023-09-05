@@ -25,6 +25,7 @@ namespace OnlineStore.WebApp.Controllers
         public readonly CategoryService CategoryService;
         public readonly ProductService ProductService;
         public readonly MeasureService MeasureService;
+        public readonly CurrentUserDto currentUser;
 
         public ProductController(ControllerDependencies dependencies, BrandService brandService, ColorService colorService, CategoryService categoryService, ProductService productService, MeasureService measureService)
             : base(dependencies)
@@ -35,6 +36,7 @@ namespace OnlineStore.WebApp.Controllers
             CategoryService = categoryService;
             ProductService = productService;
             MeasureService = measureService;
+            currentUser = dependencies.CurrentUser;
         }
 
         [HttpGet]
@@ -69,19 +71,28 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult ProductDetails(Guid id)
         {
-            var model = ProductService.GetProductById(id);
-            return View("ProductDetails", model);
+            try
+            {
+                var model = ProductService.GetProductById(id);
+                return View("ProductDetails", model);
+            }
+            catch (System.Exception)
+            {
+                return View("Error_NotFound");
+            }
         }
 
         [HttpGet]
         public IActionResult AddProductMeasure(Guid id)
         {
+
             var model = new MeasureQuantityModel();
             model.ProductId = id;
             model.ProductName = ProductService.GetProductById(id).Name;
             model.TypeId = ProductService.GetProductType(id);
 
             return View("AddProductMeasure", model);
+
         }
 
         [HttpPost]
@@ -93,8 +104,51 @@ namespace OnlineStore.WebApp.Controllers
             }
 
             ProductService.AddProductMeasure(model);
-            return RedirectToAction("ProductsView","Product");
-        }   
-        
+            return RedirectToAction("ProductsView", "Product");
+        }
+
+
+        [HttpGet]
+        public IActionResult EditProduct(Guid id)
+        {
+            try
+            {
+                var model = ProductService.GetEditProductDto(id);
+                return View("EditProduct", model);
+            }
+            catch (System.Exception)
+            {
+                return View("Error_NotFound");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult EditProduct(EditProductDto model)
+        {
+            if (model == null)
+            {
+                return View("Error_NotFound");
+            }
+
+            ProductService.EditProduct(model);
+            return RedirectToAction("ProductsView", "Product");
+        }
+
+        [HttpPost]
+        public IActionResult AddProductToCart(Guid productId, int measureId)
+        {
+            if (currentUser.IsAuthenticated)
+            {
+                ProductService.AddProductToCart(productId, measureId);
+                return Ok("Product added to cart successfully.");
+            }
+            else
+            {
+                return RedirectToAction("Login", "UserAccount");
+   
+            }
+          
+        }
+
     }
 }

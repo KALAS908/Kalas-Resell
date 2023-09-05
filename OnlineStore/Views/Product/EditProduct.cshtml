@@ -1,0 +1,71 @@
+﻿@model OnlineStore.Common.DTOs.EditProductDto
+
+
+@{
+    ViewData["Title"] = "View";
+
+}
+<link rel="stylesheet" href="~/css/PicturesGrid.css" />
+
+<h1>Create Product</h1>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditProduct" asp-controller="Product" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" type="text" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <div class="col-8">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input asp-for="Price" aria-label="Amount (to the nearest dollar)" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Discount" class="control-label"></label>
+                <input asp-for="Discount" type="text" class="form-control" />
+                <span asp-validation-for="Discount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+
+            <div class="form-group">
+                <a class="btn btn-primary" asp-area="" asp-controller="Product" asp-action="ProductsView">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+
+
+
+
+<script type="text/javascript" src="~/js/Currency.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/Products/BrandList.js"></script>
+<script src="~/js/Products/GenderList.js"></script>
+<script src="~/js/Products/TypeList.js"></script>
+<script src="~/js/Products/ColorSelect.js"></script>
+<script src="~/js/Products/CategoryList.js"></script>
+<script src="~/js/Products/HideList.js"></script>
+<script src="~/js/Products/PreviewImages.js"></script>
+<script src="~/js/Products/ProductFuncitons.js"></script>

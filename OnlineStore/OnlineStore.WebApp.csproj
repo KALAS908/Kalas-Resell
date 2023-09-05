@@ -17,11 +17,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Polly" Version="7.2.4" />
+    <PackageReference Include="Stripe.net" Version="42.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OnlineStore.BusinessLogic\OnlineStore.BusinessLogic.csproj" />
     <ProjectReference Include="..\OnlineStore.DataAccess\OnlineStore.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\NewFolder\" />
   </ItemGroup>
 
 </Project>

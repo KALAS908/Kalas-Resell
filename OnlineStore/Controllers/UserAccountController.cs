@@ -49,8 +49,6 @@ namespace OnlineStore.WebApp.Controllers
         public IActionResult Login()
         {
             var model = new LoginModel();
-
-
             return View(model);
         }
         [HttpPost]
@@ -120,10 +118,10 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult ShoppingCart(Guid id)
+        public IActionResult ShoppingCart()
         {
 
-            var model = UserAccountService.GetUserShoppingCart(id);
+            var model = UserAccountService.GetUserShoppingCart();
             return View(model);
         }
 

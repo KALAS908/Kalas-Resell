@@ -1,24 +1,44 @@
 ﻿@model OnlineStore.Common.DTOs.ProductWithMeasureDto
+@inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
 @{
     ViewData["Title"] = "View";
 }
 <style>
 
     .Carousel_description {
-        flex: 0 0 auto; /* elementul caruselului nu va crește și nu va scădea */
+        flex: 0 0 auto; 
         max-height: 1000px;
     }
 
     #Others {
-        flex: 1; /* elementul "others" va ocupa restul spațiului disponibil */
+        flex: 1;
         text-align: left;
     }
 
     #Description {
         text-align: left;
     }
+
+    .notification {
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        transition: opacity 0.5s;
+    }
+
+        .notification.hidden {
+            opacity: 0;
+        }
+
 </style>
 <input type="hidden" id="productIdHidden" name="productId" value="@Model.Id" />
+<input type="hidden" id="isUserAuthenticatedHidden" name="isUserAuthenticated" value="@CurrentUser.IsAuthenticated" />
 <div class="container text-center">
     <div class="row">
         <div id="Carousel_Description" class="col-8">
@@ -68,15 +88,19 @@
         </div>
         <div id="Others" class="col-4">
             <h5>@Model.Name</h5>
-            <p>@($"{Model.Price} USD")</p>
+            @if (Model.Discount > 0)
+            {
+                <p class="card-text">@($"Discount: {Model.Discount} %")</p>
+            }
+            <p class="card-text">@($"{Model.Price - (Model.Price * Model.Discount) / 100} USD")</p>
+
             <div class="form-group">
                 <label asp-for="MeasureId" class="control-label">Select Measure</label>
                 <select asp-for="MeasureId" class="form-control" id="productMeasureDropdown">
                 </select>
                 <span asp-validation-for="MeasureId" class="text-danger"></span>
             </div>
-
-            <a href="@Url.Action("AddProductToCart", "Product", new { id = Model.Id })" class="btn btn-primary">Add to Cart</a>
+            <button onclick="AddToCart()" class="btn btn-primary">Add to cart </button>
             <a href="@Url.Action("ProductDetails", "Product", new { id = Model.Id })" class="btn btn-primary"><i class="bi bi-box2-heart"></i></a>
         </div>
     </div>
@@ -84,8 +108,10 @@
         <h3>Description </h3>
         <p>@Model.Description</p>
     </div>
+    <div id="notification" class="notification hidden">Produsul a fost adăugat în coș!</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/js/ProductDetails/ProductMeasuresList.js"></script>
 <script type="text/javascript">new ProductMeasuresList()</script>
+<script src="~/js/ProductDetails/AddToCart.js"></script>
