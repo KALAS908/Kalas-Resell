@@ -247,6 +247,16 @@ namespace OnlineStore.WebApp.Controllers
         }
 
 
+        public IActionResult AddStock(int quantity,int measureId,Guid productId)
+        {
+            var model = new MeasureQuantityModel();
+            model.Quantity = quantity;
+            model.MeasureId = measureId;
+            model.ProductId = productId;
+            ProductService.AddProductMeasure(model);
+            return Ok();
+        }
+
         [HttpGet]
         public IActionResult EditProduct(Guid id)
         {

@@ -147,7 +147,9 @@
                         <a href="@Url.Action("Profile", "UserAccount", new { id = CurrentUser.Id })" class="text-decoration-none text-white"><i class="bi bi-person-circle"></i></a>
                         <a asp-controller="UserAccount" asp-action="ShoppingCart" style="color: white ;text-decoration :none "> <i class="bi bi-cart-fill"></i></a>
                         <a asp-controller="UserAccount" asp-action="WishList" style="color: white"><i class="bi bi-heart-fill"></i></a>
-                        <a asp-controller="UserAccount" asp-action="Logout" style="color: white"> <i class="bi bi-box-arrow-right"></i>Log out</a>
+
+                        <a href="#" onclick="confirmLogout()" style="color: white"><i class="bi bi-box-arrow-right"></i>Log out</a>
+
 
                     }
                     else
@@ -166,12 +168,6 @@
             @RenderBody()
         </main>
     </div>
-
-   @* <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - OnlineStore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -182,3 +178,16 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<script>
+    function confirmLogout() {
+        // Folosiți funcția `confirm()` pentru a afișa o casetă de dialog de confirmare
+        var result = confirm("Are you sure you want to log out?");
+
+        // Verificați răspunsul utilizatorului
+        if (result) {
+            // Dacă utilizatorul a confirmat, continuați să îi deconectați
+            window.location.href = '/UserAccount/Logout'; // sau utilizați metoda corespunzătoare pentru logout
+        }
+    }
+
+</script>

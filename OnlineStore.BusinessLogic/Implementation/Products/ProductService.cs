@@ -482,7 +482,9 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
 
         public ProductWithMeasureDto GetProductById(Guid id)
         {
-            var product = UnitOfWork.Products.Get().FirstOrDefault(x => x.Id == id);
+            var product = UnitOfWork.Products.Get()
+                .Include(x => x.Category)
+                .FirstOrDefault(x => x.Id == id);
             if (product == null)
             {
                 throw new Exception("Product not found");
@@ -494,6 +496,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
+                TypeId = product.Category.TypeId,
                 Brand = UnitOfWork.Brands.Get().FirstOrDefault(x => x.Id == product.BrandId).Name,
                 Color = UnitOfWork.Colors.Get().FirstOrDefault(x => x.Id == product.ColorId).Name,
                 Category = UnitOfWork.Categories.Get().FirstOrDefault(x => x.Id == product.CategoryId).Name,

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
 using OnlineStore.BusinessLogic.Implementation.Products.Models;
 using OnlineStore.DataAccess;
 using System;
@@ -18,19 +19,19 @@ namespace OnlineStore.BusinessLogic.Implementation.Products.Validations
         {
             this.unitOfWork = unitOfWork;
             RuleFor(p => p.Name)
-                .NotEmpty().WithMessage("Camp obligatoriu!")
-                .Must(NotAlreadyExistName).WithMessage("Acest nume exista deja");
+                .NotEmpty().WithMessage("Required!")
+                .Must(NotAlreadyExistName).WithMessage("This name alreasdy exist");
             RuleFor(p => p.Description)
-                .NotEmpty().WithMessage("Camp obligatoriu!")
-                .Must(ToLongDescription).WithMessage("Descrierea este prea lunga");
+                .NotEmpty().WithMessage("Required!")
+                .Must(ToLongDescription).WithMessage("Maximum 500 characters!");
             RuleFor(p => p.Price)
-                .NotEmpty().WithMessage("Camp obligatoriu!");
+                .NotEmpty().WithMessage("Required!");
             RuleFor(p => p.GenderId)
-                .NotEmpty().WithMessage("Camp obligatoriu!");
+                .NotEmpty().WithMessage("Required!");
             RuleFor(p => p.CategoryId)
-                .NotEmpty().WithMessage("Camp obligatoriu!");
+                .NotEmpty().WithMessage("Required!");
             RuleFor(p => p.ColorId)
-                .NotEmpty().WithMessage("Camp obligatoriu!");
+                .NotEmpty().WithMessage("Required!");
            
 
         }
@@ -48,7 +49,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products.Validations
 
         private bool ToLongDescription(string arg)
         {
-            if (arg.Length > 500)
+            if ( !arg.IsNullOrEmpty() && arg.Length > 500)
             {
                 return false;
             }
