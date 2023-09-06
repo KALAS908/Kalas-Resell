@@ -22,6 +22,8 @@ namespace OnlineStore.Common.DTOs
         public string UserName { get; set; }
         public int RoleId { get; set; }
         public string CountryId { get; set; }
+        public bool IsAdmin { get; set; }
+
 
     }
 }

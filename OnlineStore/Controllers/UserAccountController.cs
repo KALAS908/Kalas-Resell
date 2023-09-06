@@ -115,6 +115,7 @@ namespace OnlineStore.WebApp.Controllers
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim("RoleId", user.RoleId.ToString()),
+                new Claim("IsAdmin", user.IsAdmin.ToString()),
 
             };
 
@@ -227,7 +228,7 @@ namespace OnlineStore.WebApp.Controllers
             return View(model);
         }
 
-        
+
 
         [HttpGet]
         public IActionResult Medals()

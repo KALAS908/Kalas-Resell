@@ -6,14 +6,15 @@ using System.Collections.Generic;
 
 namespace OnlineStore.Entities.Entities
 {
-    public partial class ShoppingCart : IEntity
+    public partial class Comment :IEntity
     {
-        public int MeasureId { get; set; }
-        public Guid UserId { get; set; }
-        public Guid ProductId { get; set; }
-        public int Quantity { get; set; }
+        public int Id { get; set; }
+        public Guid? UserId { get; set; }
+        public Guid? ProductId { get; set; }
+        public string Text { get; set; }
+        public DateTime? PostDate { get; set; }
+        public int? Rating { get; set; }
 
-        public virtual Measure Measure { get; set; }
         public virtual Product Product { get; set; }
         public virtual User User { get; set; }
     }

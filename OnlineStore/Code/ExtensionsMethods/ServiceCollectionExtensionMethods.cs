@@ -2,6 +2,7 @@
 using OnlineStore.BusinessLogic.Implementation.Account;
 using OnlineStore.BusinessLogic.Implementation.BrandImplementation;
 using OnlineStore.BusinessLogic.Implementation.ColorImplementation;
+using OnlineStore.BusinessLogic.Implementation.ComentsImplementation;
 using OnlineStore.BusinessLogic.Implementation.Countries;
 using OnlineStore.BusinessLogic.Implementation.GenderImplementation;
 using OnlineStore.BusinessLogic.Implementation.MeasureImplementation;
@@ -55,6 +56,7 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
             services.AddScoped<ColorService>();
             services.AddScoped<ShoppingCartService>();
             services.AddScoped<OrderService>();
+            services.AddScoped<CommentService>();
             return services;
         }
 
@@ -70,6 +72,7 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
                 var Id = claims?.FirstOrDefault(c => c.Type == "Id")?.Value;
                 var Email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                 var Role = claims?.FirstOrDefault(c => c.Type == "RoleId")?.Value;
+                var IsAdmin = claims?.FirstOrDefault(c => c.Type == "IsAdmin")?.Value;
 
                 var CurrentUser = new CurrentUserDto
                 {
@@ -77,6 +80,7 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
                     Id = Id,
                     Email = Email,
                     RoleId = Convert.ToInt32(Role),
+                    IsAdmin = Convert.ToBoolean(IsAdmin),
 
                 };
 

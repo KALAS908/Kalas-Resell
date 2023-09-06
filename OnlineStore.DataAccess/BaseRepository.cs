@@ -1,13 +1,7 @@
 ﻿using OnlineStore.Common;
 using OnlineStore.DataAccess.EntityFramework.Context;
-using OnlineStore.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OnlineStore.DataAccess
+namespace OnlineStore.DataAccess 
 {
     public class BaseRepository<TEntity> : IRepository<TEntity>
         where TEntity : class, IEntity

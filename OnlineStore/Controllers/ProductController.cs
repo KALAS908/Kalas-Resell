@@ -4,6 +4,7 @@ using OnlineStore.BusinessLogic.Implementation.Account;
 using OnlineStore.BusinessLogic.Implementation.Account.Models;
 using OnlineStore.BusinessLogic.Implementation.BrandImplementation;
 using OnlineStore.BusinessLogic.Implementation.ColorImplementation;
+using OnlineStore.BusinessLogic.Implementation.ComentsImplementation;
 using OnlineStore.BusinessLogic.Implementation.Countries;
 using OnlineStore.BusinessLogic.Implementation.MeasureImplementation;
 using OnlineStore.BusinessLogic.Implementation.Products;
@@ -27,9 +28,13 @@ namespace OnlineStore.WebApp.Controllers
         public readonly ProductService ProductService;
         public readonly MeasureService MeasureService;
         public readonly CurrentUserDto currentUser;
+        public readonly CommentService CommentService;
 
 
-        public ProductController(ControllerDependencies dependencies, BrandService brandService, ColorService colorService, CategoryService categoryService, ProductService productService, MeasureService measureService)
+        public ProductController(ControllerDependencies dependencies, BrandService brandService,
+            ColorService colorService, CategoryService categoryService,
+            ProductService productService, MeasureService measureService,
+            CommentService commentService)
             : base(dependencies)
         {
 
@@ -39,6 +44,7 @@ namespace OnlineStore.WebApp.Controllers
             ProductService = productService;
             MeasureService = measureService;
             currentUser = dependencies.CurrentUser;
+            CommentService = commentService;
 
         }
 
@@ -247,7 +253,7 @@ namespace OnlineStore.WebApp.Controllers
         }
 
 
-        public IActionResult AddStock(int quantity,int measureId,Guid productId)
+        public IActionResult AddStock(int quantity, int measureId, Guid productId)
         {
             var model = new MeasureQuantityModel();
             model.Quantity = quantity;
@@ -359,5 +365,33 @@ namespace OnlineStore.WebApp.Controllers
                 return View("Error_NotFound");
             }
         }
+
+
+        [HttpPost]
+        public IActionResult AddComment(string Text, Guid productId, Guid userId, int rating)
+        {
+            var model = new CommentDto();
+            model.Text = Text;
+            model.ProductId = productId;
+            model.UserId = userId;
+            model.Date = DateTime.Now;
+            model.Rating = rating;
+            CommentService.AddComment(model);
+            return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult GetComments(Guid productId)
+        {
+            var comments = CommentService.GetProductComments(productId);
+            return PartialView("_CommentsPartial", comments);
+        }
+
+        public IActionResult RemoveComment(int commentId)
+        {
+            CommentService.RemoveComment(commentId);
+            return Ok();
+        }
+
     }
 }

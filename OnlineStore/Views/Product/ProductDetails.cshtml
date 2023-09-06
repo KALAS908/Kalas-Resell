@@ -7,6 +7,7 @@
 <input type="hidden" id="productIdHidden" name="productId" value="@Model.Id" />
 <input type="hidden" id="isUserAuthenticatedHidden" name="isUserAuthenticated" value="@CurrentUser.IsAuthenticated" />
 <input type="hidden" id="typeIdHidden" name="typeId" value="@Model.TypeId" />
+<input type="hidden" id="currentUserIdHidden" name="currentUserId" value="@CurrentUser.Id" />
 <div class="container text-center">
     <div class="row">
         <div id="Carousel_Description" class="col-8">
@@ -80,13 +81,11 @@
                 <button onclick="AddToWishList()" class="btn btn-secondary"><i class="bi bi-heart"></i></button>
                 @if (CurrentUser.RoleId == 1)
                 {
-                    @*<a href="@Url.Action("AddProductMeasure", "Product", new { id = Model.Id })" class="btn btn-secondary">Add Stock</a>*@
-
                     <button class="open-button btn btn-secondary " onclick="openForm()">Add Stock</button>
 
                     <div class="form-popup" id="myForm">
                         <form class="form-container" onsubmit="AddStock(); return false;">
-                            <!-- Use onsubmit event -->
+
                             <label for="quantity"><b>Quantity</b></label>
                             <input type="number" placeholder="Enter Quantity" name="quantity" required min="1">
 
@@ -113,6 +112,29 @@
     <div class="overlay" id="overlay"></div>
 </div>
 
+<input type="hidden" name="Rating" id="Rating" value="0" />
+@if (CurrentUser.IsAuthenticated)
+{
+    <div class="form-group">
+       
+        <label for="comment-text"><b>Add a comment:</b></label>
+        <textarea id="comment-text" class="form-control" required></textarea>
+        <div class="col-md-7">
+            <div onmouseout="CRateSelected()">
+                <span class="starFade" id="Rate1" onclick="CRate(1)" onmouseover="CRateOver(1)" onmouseout="CRateOut(1)"> </span>
+                <span class="starFade" id="Rate2" onclick="CRate(2)" onmouseover="CRateOver(2)" onmouseout="CRateOut(2)"> </span>
+                <span class="starFade" id="Rate3" onclick="CRate(3)" onmouseover="CRateOver(3)" onmouseout="CRateOut(3)"></span>
+                <span class="starFade" id="Rate4" onclick="CRate(4)" onmouseover="CRateOver(4)" onmouseout="CRateOut(4)"> </span>
+                <span class="starFade" id="Rate5" onclick="CRate(5)" onmouseover="CRateOver(5)" onmouseout="CRateOut(5)"></span>
+            </div>
+        </div>
+    </div>
+    <button id="add-comment-btn" class="btn btn-secondary">Post Comment</button>
+}
+
+<div id="comments-container">
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/js/ProductDetails/ProductMeasuresList.js"></script>
 <script type="text/javascript">new ProductMeasuresList()</script>
@@ -122,3 +144,5 @@
 <script src="~/js/ProductDetails/MeasureList.js"></script>
 <script type="text/javascript">new MeasureList()</script>
 <script src="~/js/ProductDetails/AddStock.js"></script>
+<script src="~/js/ProductDetails/Comment.js"></script>
+<script src="~/js/ProductDetails/StarRatings.js"></script>
