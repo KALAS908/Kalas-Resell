@@ -273,6 +273,7 @@ namespace OnlineStore.WebApp.Controllers
             try
             {
                 var model = ProductService.GetEditProductDto(id);
+                ViewBag.ProductId = id;
                 return View("EditProduct", model);
             }
             catch (System.Exception)

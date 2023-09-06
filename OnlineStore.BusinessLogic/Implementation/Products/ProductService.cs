@@ -19,10 +19,12 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
     public class ProductService : BaseService
     {
         private readonly CreateProductValidation validationRules;
+        private readonly EditProductValidation editValidationRules;
         private readonly CurrentUserDto currentUser;
         public ProductService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
         {
             validationRules = new CreateProductValidation(serviceDependencies.UnitOfWork);
+            editValidationRules = new EditProductValidation(serviceDependencies.UnitOfWork);
             currentUser = serviceDependencies.CurrentUser;
         }
 
@@ -571,6 +573,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
 
         public void EditProduct(EditProductDto model)
         {
+            editValidationRules.Validate(model).ThenThrow();
 
             var product = UnitOfWork.Products.Get().FirstOrDefault(x => x.Id == model.Id);
 
@@ -686,7 +689,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
 
         public List<int> TransformStringToInt(string Anything)
         {
-            if(Anything == null)
+            if (Anything == null)
             {
                 return new List<int>();
             }

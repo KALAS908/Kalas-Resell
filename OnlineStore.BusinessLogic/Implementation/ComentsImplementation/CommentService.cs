@@ -18,16 +18,31 @@ namespace OnlineStore.BusinessLogic.Implementation.ComentsImplementation
 
         public void AddComment(CommentDto model)
         {
-            var comment = new Comment
+
+            var alreadyCommented = UnitOfWork.Comments.Get()
+                .FirstOrDefault(x => x.ProductId == model.ProductId && x.UserId == model.UserId);
+            if (alreadyCommented != null)
             {
-                ProductId = model.ProductId,
-                UserId = model.UserId,
-                Text = model.Text,
-                PostDate = DateTime.FromOADate(DateTime.Now.ToOADate()),
-                Rating = model.Rating
-            };
-            UnitOfWork.Comments.Insert(comment);
-            UnitOfWork.SaveChanges();
+                alreadyCommented.Text = model.Text;
+                alreadyCommented.Rating = model.Rating;
+                UnitOfWork.Comments.Update(alreadyCommented);
+                UnitOfWork.SaveChanges();
+                return;
+            }
+
+            else
+            {
+                var comment = new Comment
+                {
+                    ProductId = model.ProductId,
+                    UserId = model.UserId,
+                    Text = model.Text,
+                    PostDate = DateTime.FromOADate(DateTime.Now.ToOADate()),
+                    Rating = model.Rating
+                };
+                UnitOfWork.Comments.Insert(comment);
+                UnitOfWork.SaveChanges();
+            }
         }
 
         public List<CommentDto> GetProductComments(Guid productId)
