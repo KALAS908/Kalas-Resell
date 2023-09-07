@@ -48,12 +48,7 @@ namespace OnlineStore.WebApp.Controllers
 
         }
 
-        [HttpGet]
-        public IActionResult Top10Products()
-        {
-            var model = ProductService.GetTopProducts();
-            return View(model);
-        }
+       
         [HttpGet]
         public IActionResult Create()
         {
@@ -105,9 +100,17 @@ namespace OnlineStore.WebApp.Controllers
             ViewBag.PageSize = pagesize;
             ViewBag.GenderId = genderId;
             ViewBag.SelectedBrands = selectedBrands;
-            var model = ProductService.GetAllClothes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId, maxPrice, measuresId);
             ViewBag.ModelCount = ProductService.GetClothesCount(searchString, genderId, brandsId, maxPrice, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            if(ViewBag.PageCount < page)
+            {
+                ViewBag.page = Convert.ToInt32(ViewBag.PageCount);
+            }
+            else
+            {
+                ViewBag.page = page;
+            }
+            var model = ProductService.GetAllClothes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId, maxPrice, measuresId);
             return View(model);
         }
 
@@ -138,9 +141,18 @@ namespace OnlineStore.WebApp.Controllers
             ViewBag.GenderId = genderId;
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SelectedMeasures = selectedMeasures;
-            var model = ProductService.GetAllShoes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId, price, measuresId);
             ViewBag.ModelCount = ProductService.GetShoesCount(searchString, genderId, brandsId, price, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            if (ViewBag.PageCount < page)
+            {
+                ViewBag.page = Convert.ToInt32(ViewBag.PageCount);
+            }
+            else
+            {
+                ViewBag.page = page;
+            }
+            var model = ProductService.GetAllShoes(genderId, searchString, ViewBag.page, (int)pagesize, brandsId, price, measuresId);
+            
             return View(model);
         }
 
@@ -170,9 +182,18 @@ namespace OnlineStore.WebApp.Controllers
             ViewBag.PageSize = pagesize;
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.CategoryId = categoryId;
-            var model = ProductService.GetProuctsByCategory(categoryId, searchString, ViewBag.page, (int)pagesize, brandsId, maxPrice, measuresId);
             ViewBag.ModelCount = ProductService.GetCategoryCount(searchString, categoryId, brandsId, maxPrice, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            if (ViewBag.PageCount < page)
+            {
+                ViewBag.page = Convert.ToInt32(ViewBag.PageCount);
+            }
+            else
+            {
+                ViewBag.page = page;
+            }
+            var model = ProductService.GetProuctsByCategory(categoryId, searchString, ViewBag.page, (int)pagesize, brandsId, maxPrice, measuresId);
+           
             return View(model);
         }
 
@@ -202,9 +223,18 @@ namespace OnlineStore.WebApp.Controllers
             ViewBag.PageSize = pagesize;
             ViewBag.GenderId = genderId;
             ViewBag.SelectedBrands = selectedBrands;
-            var model = ProductService.GetProuctsByGender(genderId, searchString, ViewBag.page, (int)pagesize, brandsId, maxPrice, measuresId);
             ViewBag.ModelCount = ProductService.GetGenderCount(searchString, genderId, brandsId, maxPrice, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            if (ViewBag.PageCount < page)
+            {
+                ViewBag.page = Convert.ToInt32(ViewBag.PageCount);
+            }
+            else
+            {
+                ViewBag.page = page;
+            }
+            var model = ProductService.GetProuctsByGender(genderId, searchString, ViewBag.page, (int)pagesize, brandsId, maxPrice, measuresId);
+             
             return View(model);
         }
 
@@ -392,6 +422,18 @@ namespace OnlineStore.WebApp.Controllers
         {
             CommentService.RemoveComment(commentId);
             return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult Top10Products()
+        {
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+
+            }
+            var model = ProductService.GetTopProducts();
+            return View(model);
         }
 
     }

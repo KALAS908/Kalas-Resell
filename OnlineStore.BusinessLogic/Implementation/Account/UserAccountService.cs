@@ -31,6 +31,10 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
 
         public CurrentUserDto Login(string email, string password)
         {
+            if (email == null || password == null)
+            {
+                return new CurrentUserDto { IsAuthenticated = false };
+            }
 
             var user = UnitOfWork.Users.Get().
                 FirstOrDefault(u => u.Email == email);

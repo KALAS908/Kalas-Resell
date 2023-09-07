@@ -9,6 +9,7 @@ using OnlineStore.WebApp.Code;
 using System.Security.Claims;
 using PagedList;
 using OnlineStore.Entities.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineStore.WebApp.Controllers
 {
@@ -25,14 +26,21 @@ namespace OnlineStore.WebApp.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         public ViewResult AllUsers(string searchString, int? page)
         {
             double pagesize = 15;
+            ViewBag.ModelCount = UserAccountService.GetUserCount(searchString);
+            ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            if (ViewBag.PageCount < page)
+            {
+                ViewBag.page = Convert.ToInt32(ViewBag.PageCount);
+            }
+            else
+            {
+                ViewBag.page = page;
+            }
 
-            var top10 = UserAccountService.GetTopUsers();
-
-
-            ViewBag.Page = page;
             if (ViewBag.page == null)
             {
                 ViewBag.page = 1;
@@ -47,8 +55,7 @@ namespace OnlineStore.WebApp.Controllers
             }
 
             var model = UserAccountService.GetAllUsers(searchString, (int)pagesize, ViewBag.page);
-            ViewBag.ModelCount = UserAccountService.GetUserCount(searchString);
-            ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+
             return View(model);
         }
 
@@ -222,8 +229,14 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpGet]
+
         public IActionResult Top10Users()
         {
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+
+            }
             var model = UserAccountService.GetTopUsers();
             return View(model);
         }
@@ -233,6 +246,11 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult Medals()
         {
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+
+            }
             return View();
         }
     }

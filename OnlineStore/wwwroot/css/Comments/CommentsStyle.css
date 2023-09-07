@@ -7,7 +7,7 @@
     transition: box-shadow 0.3s ease;
     position: relative;
     display: flex;
-    flex-direction: column; /* Folosește flexbox pentru aliniere verticală */
+    flex-direction: column; 
 }
 
     .comment-card:hover {
@@ -20,8 +20,8 @@
 }
 
 .comment-text {
-    word-wrap: break-word; /* Textul va trece pe următorul rând dacă este prea lung */
-    flex-grow: 1; /* Extindeți textul pentru a umple spațiul disponibil pe verticală */
+    word-wrap: break-word; 
+    flex-grow: 1; 
 }
 
 .remove-button {
@@ -32,7 +32,7 @@
     padding: 5px 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    align-self: flex-end; /* Așezați butonul în partea de jos a cardului */
+    align-self: flex-end; 
 }
 
     .remove-button:hover {
