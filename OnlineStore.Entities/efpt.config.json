@@ -90,6 +90,14 @@
       {
          "Name": "[dbo].[WishList]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ProductMeasureView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ProductView]",
+         "ObjectType": 3
       }
    ],
    "UiHint": "thaulica.StoreDataBase.dbo",

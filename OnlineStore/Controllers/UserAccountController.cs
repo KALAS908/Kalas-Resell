@@ -26,7 +26,6 @@ namespace OnlineStore.WebApp.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
         public ViewResult AllUsers(string searchString, int? page)
         {
             double pagesize = 15;
@@ -224,6 +223,7 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult Orders()
         {
+            
             var model = UserAccountService.GetUserOrders();
             return View(model);
         }

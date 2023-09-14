@@ -16,6 +16,7 @@ namespace OnlineStore.WebApp.Controllers
 
         public IActionResult OrderDetails(int Id)
         {
+
             var model = orderService.GetAllOrder(Id);
             return View(model);
         }

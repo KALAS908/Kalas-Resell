@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace OnlineStore.Entities.Entities
 {
-    public partial class Comment :IEntity
+    public partial class Comment : IEntity
     {
         public int Id { get; set; }
         public Guid? UserId { get; set; }

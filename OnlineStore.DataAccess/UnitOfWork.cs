@@ -76,6 +76,9 @@ namespace OnlineStore.DataAccess
         public IRepository<Comment> comments;
         public IRepository<Comment> Comments => comments ??= new BaseRepository<Comment>(Context);
 
+        public IRepository<ProductView> productview;
+        public IRepository<ProductView> ProductView => productview ??= new BaseRepository<ProductView>(Context);
+
         public void SaveChanges()
         {
             Context.SaveChanges();

@@ -74,7 +74,7 @@ namespace OnlineStore.WebApp.Controllers
 
         }
 
-        [HttpGet("/Prduct/ClothesView/")]
+        [HttpGet("/Product/ClothesView/")]
         public IActionResult ClothesView(int genderId, string searchString, int? page, string selectedBrands, int maxPrice, string selectedMeasures)
         {
 
@@ -82,7 +82,7 @@ namespace OnlineStore.WebApp.Controllers
             {
                 maxPrice = 10000;
             }
-            if (page == null)
+            if (page == null || page == 0 )
             {
                 page = 1;
             }
@@ -121,7 +121,7 @@ namespace OnlineStore.WebApp.Controllers
             {
                 maxPrice = 10000;
             }
-            if (page == null)
+            if (page == null || page == 0)
             {
                 page = 1;
             }
@@ -171,7 +171,7 @@ namespace OnlineStore.WebApp.Controllers
             double pagesize = 15;
             var measuresId = ProductService.TransformStringToInt(selectedMeasures);
             var brandsId = ProductService.TransformStringToInt(selectedBrands);
-            if (page == null)
+            if (page == null || page == 0)
             {
                 page = 1;
             }
@@ -200,12 +200,12 @@ namespace OnlineStore.WebApp.Controllers
 
         [HttpGet("/Product/GenderView/")]
         public IActionResult GenderView(int genderId, string searchString, int? page, string selectedBrands, int maxPrice, string selectedMeasures)
-        { ///strip
+        { 
             if (maxPrice == 0)
             {
                 maxPrice = 10000;
             }
-            if (page == null)
+            if (page == null || page == 0)
             {
                 page = 1;
             }

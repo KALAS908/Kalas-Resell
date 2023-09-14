@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace OnlineStore.Entities.Entities
 {
     public partial class Type : IEntity
-    {
+    { 
         public Type()
         {
             Measure = new HashSet<Measure>();

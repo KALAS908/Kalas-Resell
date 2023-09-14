@@ -32,6 +32,8 @@ namespace OnlineStore.DataAccess.EntityFramework.Context
         public virtual DbSet<OrderedItems> OrderedItems { get; set; }
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<ProductMeasure> ProductMeasure { get; set; }
+        public virtual DbSet<ProductMeasureView> ProductMeasureView { get; set; }
+        public virtual DbSet<ProductView> ProductView { get; set; }
         public virtual DbSet<Receipt> Receipt { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<ShoppingCart> ShoppingCart { get; set; }
@@ -45,7 +47,7 @@ namespace OnlineStore.DataAccess.EntityFramework.Context
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=StoreDataBase;Integrated Security=True ; Encrypt = False");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=StoreDataBase;Integrated Security=True; Encrypt=False ");
             }
         }
 
@@ -204,6 +206,58 @@ namespace OnlineStore.DataAccess.EntityFramework.Context
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__ProductMe__Produ__534D60F1");
+            });
+
+            modelBuilder.Entity<ProductMeasureView>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("ProductMeasureView");
+
+                entity.Property(e => e.BrandName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.CategoryName).HasMaxLength(100);
+
+                entity.Property(e => e.ColorName)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.MeasureId).HasColumnName("MeasureID");
+
+                entity.Property(e => e.ProductName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<ProductView>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("ProductView");
+
+                entity.Property(e => e.BrandName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.CategoryName).HasMaxLength(100);
+
+                entity.Property(e => e.ColorName)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.ProductName)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Receipt>(entity =>
