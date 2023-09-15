@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using OnlineStore.Entities.Entities;
+using Color = OnlineStore.Entities.Entities.Color;
+using Image = OnlineStore.Entities.Entities.Image;
 using Type = OnlineStore.Entities.Entities.Type;
 
 namespace OnlineStore.DataAccess.EntityFramework.Context

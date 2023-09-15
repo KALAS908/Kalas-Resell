@@ -4,7 +4,9 @@ using OnlineStore.BusinessLogic.Implementation.GenderImplementation;
 using OnlineStore.BusinessLogic.Implementation.Products;
 using OnlineStore.BusinessLogic.Implementation.TypeImplementation;
 using OnlineStore.Code;
+using OnlineStore.Common.DTOs;
 using OnlineStore.Models;
+using OnlineStore.WebApp;
 using OnlineStore.WebApp.Code;
 using OnlineStore.WebApp.Controllers;
 using System.Diagnostics;
@@ -18,8 +20,10 @@ namespace OnlineStore.Controllers
         private readonly CategoryService _categoryService;
         private readonly TypeService _typeService;
         private readonly GenderService _genderService;
+        private readonly IEmailSender _emailSender;
 
-        public HomeController(ControllerDependencies dependencies, ILogger<HomeController> logger, ProductService productService, GenderService genderService, CategoryService categoryService , TypeService typeService)
+
+        public HomeController(ControllerDependencies dependencies, ILogger<HomeController> logger, ProductService productService, GenderService genderService, CategoryService categoryService, TypeService typeService, IEmailSender emailSender)
             : base(dependencies)
         {
             _logger = logger;
@@ -27,11 +31,13 @@ namespace OnlineStore.Controllers
             _genderService = genderService;
             _categoryService = categoryService;
             _typeService = typeService;
+            _emailSender = emailSender;
 
         }
 
-        public IActionResult Index()
-        { 
+        public  IActionResult Index()
+        {
+            
             var model = _productService.GetAllProducts();
             return View("Index", model);
         }

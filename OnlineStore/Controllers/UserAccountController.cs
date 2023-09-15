@@ -17,12 +17,14 @@ namespace OnlineStore.WebApp.Controllers
     {
         private readonly UserAccountService UserAccountService;
         private readonly CountriesService CountriesService;
+        private readonly IEmailSender EmailSender;
 
-        public UserAccountController(ControllerDependencies dependencies, UserAccountService userAccountService, CountriesService countriesService)
+        public UserAccountController(ControllerDependencies dependencies, UserAccountService userAccountService, CountriesService countriesService, IEmailSender emailSender)
             : base(dependencies)
         {
             UserAccountService = userAccountService;
             CountriesService = countriesService;
+            EmailSender = emailSender;
         }
 
 
@@ -67,7 +69,7 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(RegisterModel model)
+        public async Task<IActionResult> RegisterAsync(RegisterModel model)
         {
             if (model == null)
             {
@@ -80,6 +82,10 @@ namespace OnlineStore.WebApp.Controllers
             loginModel.Email = model.Email;
             loginModel.Password = model.Password;
             _ = Login(loginModel);
+            var receiver = model.Email;
+            var subject = "Welcome to our store";
+            var message = "Welcome to our store";
+            await EmailSender.SendEmailAsync(receiver, subject, message);
             return RedirectToAction("Index", "Home");
         }
 
@@ -101,6 +107,7 @@ namespace OnlineStore.WebApp.Controllers
             }
 
             await LogIn(user);
+
 
             return RedirectToAction("Index", "Home");
         }
@@ -127,6 +134,8 @@ namespace OnlineStore.WebApp.Controllers
 
             var identity = new ClaimsIdentity(claims, "Cookies");
             var principal = new ClaimsPrincipal(identity);
+
+           
 
             await HttpContext.SignInAsync(
                     scheme: "OnlineStoreCookies",
@@ -223,7 +232,7 @@ namespace OnlineStore.WebApp.Controllers
         [HttpGet]
         public IActionResult Orders()
         {
-            
+
             var model = UserAccountService.GetUserOrders();
             return View(model);
         }

@@ -5,6 +5,7 @@ using OnlineStore.BusinessLogic.Base;
 using OnlineStore.DataAccess;
 using OnlineStore.DataAccess.EntityFramework.Context;
 using OnlineStore.Entities;
+using OnlineStore.WebApp;
 using OnlineStore.WebApp.Code;
 using OnlineStore.WebApp.Code.ExtensionsMethods;
 using Stripe;
@@ -28,13 +29,14 @@ builder.Services.AddAuthentication("OnlineStoreCookies")
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
     });
-
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(typeof(GlobalExceptionFilterAttribute));
 });
 
 builder.Services.AddRazorPages();
+
 
 var app = builder.Build();
 

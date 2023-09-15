@@ -10,8 +10,6 @@ namespace OnlineStore.Common.DTOs
     {
         public int Id { get; set; }
         public string UserId { get; set; }
-
-
         public double TotalPrice { get; set; }
     }
 }

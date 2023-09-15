@@ -4,6 +4,7 @@ using OnlineStore.BusinessLogic.Implementation.BrandImplementation;
 using OnlineStore.BusinessLogic.Implementation.ColorImplementation;
 using OnlineStore.BusinessLogic.Implementation.ComentsImplementation;
 using OnlineStore.BusinessLogic.Implementation.Countries;
+using OnlineStore.BusinessLogic.Implementation.EmailImplementation;
 using OnlineStore.BusinessLogic.Implementation.GenderImplementation;
 using OnlineStore.BusinessLogic.Implementation.MeasureImplementation;
 using OnlineStore.BusinessLogic.Implementation.NewFolder;
@@ -57,6 +58,7 @@ namespace OnlineStore.WebApp.Code.ExtensionsMethods
             services.AddScoped<ShoppingCartService>();
             services.AddScoped<OrderService>();
             services.AddScoped<CommentService>();
+            services.AddScoped<EmailService>();
             return services;
         }
 

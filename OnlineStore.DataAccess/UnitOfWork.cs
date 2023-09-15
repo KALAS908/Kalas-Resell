@@ -3,6 +3,8 @@ using OnlineStore.DataAccess.EntityFramework.Context;
 using OnlineStore.Entities;
 using OnlineStore.Entities.Entities;
 using System;
+using Color = OnlineStore.Entities.Entities.Color;
+using Image = OnlineStore.Entities.Entities.Image;
 using Type = OnlineStore.Entities.Entities.Type;
 
 namespace OnlineStore.DataAccess

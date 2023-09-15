@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using OnlineStore.DataAccess.EntityFramework.Context;
 using OnlineStore.Common.DTOs;
+using Color = OnlineStore.Entities.Entities.Color;
 
 namespace OnlineStore.BusinessLogic.Implementation.ColorImplementation
 {
