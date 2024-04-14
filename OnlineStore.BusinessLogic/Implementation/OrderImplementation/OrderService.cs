@@ -11,6 +11,9 @@ namespace OnlineStore.BusinessLogic.Implementation.OrderImplementation
     public class OrderService : BaseService
     {
         private readonly CurrentUserDto currentUser;
+
+     
+
         public OrderService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
         {
             currentUser = serviceDependencies.CurrentUser;
@@ -31,5 +34,7 @@ namespace OnlineStore.BusinessLogic.Implementation.OrderImplementation
             }
             return orderedItems;
         }
+
+   
     }
 }

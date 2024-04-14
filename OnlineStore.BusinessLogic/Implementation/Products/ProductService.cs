@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Azure;
 using System.Drawing.Printing;
 using static Bogus.DataSets.Name;
+using Image = OnlineStore.Entities.Entities.Image;
 
 namespace OnlineStore.BusinessLogic.Implementation.Products
 {

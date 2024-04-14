@@ -2,18 +2,15 @@
 using OnlineStore.BusinessLogic.Implementation.Account.Models;
 using OnlineStore.BusinessLogic.Implementation.Account.Validations;
 using OnlineStore.Common.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using OnlineStore.Common.Extesnsions;
 using OnlineStore.Entities.Entities;
-using AutoMapper;
 using System.Security.Cryptography;
-using Polly.Utilities;
 using OnlineStore.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
+using OnlineStore.WebApp;
+using OnlineStore.BusinessLogic.Implementation.EmailImplementation;
+using System;
 
 namespace OnlineStore.BusinessLogic.Implementation.Account
 {
@@ -22,11 +19,14 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
 
         private readonly RegisterUserValidator validationRules;
         private readonly EditValidator editValidationRules;
+        private readonly EmailService _emaiService;
 
-        public UserAccountService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
+        public UserAccountService(ServiceDependencies serviceDependencies, EmailService emailService) : base(serviceDependencies)
         {
             validationRules = new RegisterUserValidator(serviceDependencies.UnitOfWork);
             editValidationRules = new EditValidator(serviceDependencies.UnitOfWork, CurrentUser);
+            _emaiService = emailService;
+
         }
 
         public CurrentUserDto Login(string email, string password)
@@ -203,6 +203,10 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
                 var availableQuantity = UnitOfWork.ProductMeasures.Get().FirstOrDefault(x => x.ProductId == product.Id && x.MeasureId == item.MeasureId).Quantity;
                 if (availableQuantity == 0)
                 {
+                    var userEmail = CurrentUser.Email;
+                    var message = $"We are sorry to inform you that product {product.Name} is out of stock";
+                    var subject = "Product out of stock";
+                    _ = _emaiService.SendEmailAsync(userEmail, message, subject);
                     UnitOfWork.ShoppingCarts.Delete(item);
                     UnitOfWork.SaveChanges();
                 }
