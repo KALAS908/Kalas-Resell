@@ -12,6 +12,8 @@ using OnlineStore.Entities.Entities;
 using AutoMapper;
 using System.Security.Cryptography;
 using Polly.Utilities;
+using OnlineStore.Entities.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineStore.BusinessLogic.Implementation.Account
 {
@@ -29,8 +31,10 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
 
         public CurrentUserDto Login(string email, string password)
         {
-
-
+            if (email == null || password == null)
+            {
+                return new CurrentUserDto { IsAuthenticated = false };
+            }
 
             var user = UnitOfWork.Users.Get().
                 FirstOrDefault(u => u.Email == email);
@@ -39,15 +43,18 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
                 FirstOrDefault(u => u.UserId == user.Id);
             var hashedPasswordInput = StringToHash(password + randomString.RandomString);
 
-            if (user.Password != hashedPasswordInput)
-            {
-                return new CurrentUserDto { IsAuthenticated = false };
-            }
 
             if (user == null)
             {
                 return new CurrentUserDto { IsAuthenticated = false };
             }
+
+            if (user.Password != hashedPasswordInput)
+            {
+                return new CurrentUserDto { IsAuthenticated = false };
+            }
+
+
 
             var CurrentUser = new CurrentUserDto
             {
@@ -55,11 +62,20 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                RoleId = user.RoleId.ToString(),
+                RoleId = (int)user.RoleId,
                 CountryId = user.CountryId.ToString(),
                 UserName = user.UserName,
                 IsAuthenticated = true
             };
+            if (CurrentUser.RoleId == 1)
+            {
+                CurrentUser.IsAdmin = true;
+            }
+            else
+            {
+                CurrentUser.IsAdmin = false;
+            }
+
             return CurrentUser;
 
         }
@@ -84,6 +100,8 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             UnitOfWork.Users.Insert(user);
             UnitOfWork.UsersStrings.Insert(userString);
 
+
+
             UnitOfWork.SaveChanges();
         }
 
@@ -92,17 +110,17 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
         {
             using (SHA256 sha256 = SHA256.Create())
             {
-                // Convert input string to bytes
+
                 byte[] inputBytes = Encoding.UTF8.GetBytes(input);
 
-                // Compute hash
+
                 byte[] hashBytes = sha256.ComputeHash(inputBytes);
 
-                // Convert hash bytes to hexadecimal representation
+
                 StringBuilder builder = new StringBuilder();
                 foreach (byte b in hashBytes)
                 {
-                    builder.Append(b.ToString("x2")); // "x2" formats as hexadecimal with 2 digits
+                    builder.Append(b.ToString("x2"));
                 }
 
                 return builder.ToString();
@@ -190,7 +208,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
                 }
                 else
                 {
-                    if(availableQuantity < item.Quantity)
+                    if (availableQuantity < item.Quantity)
                     {
                         item.Quantity = availableQuantity;
                         UnitOfWork.ShoppingCarts.Update(item);
@@ -214,5 +232,173 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
             return ShoppingCartDto;
         }
 
+        public IEnumerable<WishListDto> GetUserWishList()
+        {
+            var currentUser = CurrentUser;
+            var WishListProducts = UnitOfWork.WishLists.Get()
+                .Include(x => x.Product)
+                .Where(s => s.UserId.ToString() == currentUser.Id)
+                .ToList();
+            var WishListDto = new List<WishListDto>();
+
+            foreach (var product in WishListProducts)
+            {
+                var image = UnitOfWork.ProductImages.Get().FirstOrDefault(x => x.ProductId == product.ProductId);
+                var productDto = new WishListDto
+                {
+                    ProductId = product.ProductId,
+                    ProductName = product.Product.Name,
+                    ProductPrice = (double)product.Product.Price,
+                    ProductImage = image.Picture,
+                    ProductDiscount = (int)product.Product.Discount
+                };
+                WishListDto.Add(productDto);
+            }
+            return WishListDto;
+        }
+
+        public int GetUserCount(string searchString)
+        {
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                return UnitOfWork.Users.Get().Where(x => x.FirstName.ToLower().Contains(searchString.ToLower()) ||
+                x.LastName.ToLower().Contains(searchString.ToLower()) ||
+                x.Email.ToLower().Contains(searchString.ToLower()) ||
+                x.UserName.ToLower().Contains(searchString.ToLower()))
+                    .Count();
+            }
+            return UnitOfWork.Users.Get().Count();
+        }
+
+        public IEnumerable<UserDto> GetAllUsers(string searchString, int pageSize, int page)
+        {
+
+            var users = new List<User>();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = UnitOfWork.Users
+              .Get()
+              .Where(x => x.FirstName.ToLower().Contains(searchString.ToLower()) || x.LastName.ToLower().Contains(searchString.ToLower()) || x.Email.ToLower().Contains(searchString.ToLower()) || x.UserName.ToLower().Contains(searchString.ToLower()))
+              .Skip((page - 1) * pageSize)
+              .Take(pageSize)
+              .ToList();
+
+            }
+            else
+            {
+                users = UnitOfWork.Users
+                   .Get()
+                   .Skip((page - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+
+
+            var usersDto = new List<UserDto>();
+            foreach (var item in users)
+            {
+                var userDto = new UserDto
+                {
+                    UserId = item.Id,
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    Email = item.Email,
+                    UserName = item.UserName,
+                    Role = UnitOfWork.Roles.Get().FirstOrDefault(r => r.Id == item.RoleId).Role1
+                };
+                usersDto.Add(userDto);
+            }
+            return usersDto;
+        }
+
+        public void DeleteUser(Guid Id)
+        {
+            var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == Id);
+            if (user != null)
+            {
+                UnitOfWork.Users.Delete(user);
+                UnitOfWork.SaveChanges();
+            }
+        }
+
+
+        public void DeleteAccount()
+        {
+            var currentUser = CurrentUser;
+            var user = UnitOfWork.Users.Get().FirstOrDefault(u => u.Id.ToString() == currentUser.Id);
+            UnitOfWork.Users.Delete(user);
+            UnitOfWork.SaveChanges();
+        }
+        public void MakeAdmin(Guid Id)
+        {
+            var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == Id);
+            if (user != null)
+            {
+                user.RoleId = (int)RolesEnum.Admin;
+                UnitOfWork.Users.Update(user);
+                UnitOfWork.SaveChanges();
+            }
+        }
+        public void MakeUser(Guid Id)
+        {
+            var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == Id);
+            if (user != null)
+            {
+                user.RoleId = (int)RolesEnum.User;
+                UnitOfWork.Users.Update(user);
+                UnitOfWork.SaveChanges();
+            }
+        }
+
+        public List<OrderDto> GetUserOrders()
+        {
+            var orders = UnitOfWork.Receipts.Get().Where(x => x.UserId.ToString() == CurrentUser.Id).ToList();
+            var ordersDto = new List<OrderDto>();
+            foreach (var item in orders)
+            {
+                var orderDto = new OrderDto
+                {
+                    Id = item.Id,
+                    TotalPrice = (double)item.TotalPrice,
+                };
+                ordersDto.Add(orderDto);
+            }
+            return ordersDto;
+        }
+
+
+        public IEnumerable<RankingDto> GetTopUsers()
+        {
+            var users = UnitOfWork.Receipts.Get()
+                .GroupBy(x => x.UserId)
+                .Select(x => new { UserId = x.Key, TotalPrice = x.Sum(y => y.TotalPrice) })
+                .OrderByDescending(x => x.TotalPrice)
+                .Take(10)
+                .ToList();
+
+            var usersDto = new List<RankingDto>();
+            foreach (var item in users)
+            {
+                var user = UnitOfWork.Users.Get().FirstOrDefault(x => x.Id == item.UserId);
+                var userDto = new RankingDto
+                {
+                    UserId = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    Role = UnitOfWork.Roles.Get().FirstOrDefault(r => r.Id == user.RoleId).Role1,
+                    TotalPrice = (double)item.TotalPrice
+                };
+                usersDto.Add(userDto);
+            }
+            return usersDto;
+        }
+
+
     }
+
+
+
 }
+

@@ -1,0 +1,40 @@
+﻿.comment-card {
+    background-color: #ffffff;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column; 
+}
+
+    .comment-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+.comment-user {
+    font-weight: bold;
+    color: #333;
+}
+
+.comment-text {
+    word-wrap: break-word; 
+    flex-grow: 1; 
+}
+
+.remove-button {
+    background-color: #ff5733;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-end; 
+}
+
+    .remove-button:hover {
+        background-color: #d6360a;
+    }

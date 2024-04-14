@@ -1,0 +1,154 @@
+﻿@model IEnumerable<OnlineStore.Common.DTOs.ProductDto>
+@inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
+@{
+    ViewBag.Title = "Shoes";
+    ViewBag.PageCount = Convert.ToInt32(ViewBag.Pagecount);
+    ViewBag.Page = Convert.ToInt32(ViewBag.Page);
+    ViewBag.PageSize = Convert.ToInt32(ViewBag.PageSize);
+    ViewBag.ModelCount = Convert.ToInt32(ViewBag.ModelCount);
+    ViewBag.SearchString = ViewBag.SearchString;
+    ViewBag.SelectedBrands = ViewBag.SelectedBrands;
+    ViewBag.GenderId = Convert.ToInt32(ViewBag.GenderId);
+    ViewBag.SelectedMeasures = ViewBag.SelectedMeasures;
+
+}
+
+
+<link rel="stylesheet" href="~/css/Filters/Filters.css" />
+
+@using (Html.BeginForm("GenderView", "Product", new { genderId = ViewBag.GenderId }, FormMethod.Get))
+{
+    <div>
+        Find by name: @Html.TextBox("SearchString", ViewBag.SearchString as string)
+
+        @Html.Hidden( "genderId", ViewBag.GenderId as int?)
+        @Html.Hidden("selectedBrands", ViewBag.SelectedBrands as string)
+        @Html.Hidden("maxPrice", ViewBag.MaxPrice as int?)
+        @Html.Hidden("selectedMeasures", ViewBag.SelectedMeasures as string)
+        <input type="submit" value="Search" class="btn btn-dark" />
+    </div>
+}
+
+<div class="content-container">
+    <input type="hidden" id="genderIdHidden" name="genderId" value="@ViewBag.GenderId" />
+    <input type="hidden" id="searchStringHidden" name="searchString" value="@ViewBag.SearchString" />
+    <input type="hidden" id="pageHidden" name="page" value="@ViewBag.Page" />
+    <input type="hidden" id="selectedBrandsHidden" name="selectedBrands" value="@ViewBag.SelectedBrands" />
+    <input type="hidden" id="maxPriceHidden" name="maxPrice" value="@ViewBag.MaxPrice" />
+    <input type="hidden" id="selectedMeasuresHidden" name="selectedMeasures" value="@ViewBag.SelectedMeasures" />
+    <div class="filter-container">
+
+        <div id="brandFilter">
+            <h5>Brands</h5>
+            <ul id="brandList"></ul>
+        </div>
+        <div id="measureFilter">
+            <h5>Measures</h5>
+            <ul id="measureList"></ul>
+        </div>
+        <div id="slidecontainer">
+            <span>Max Price:</span> <span id="f" style="font-weight:bold;color:black">10000</span> <span>USD</span>
+            <p><input type="range" min="0" max="10000" value="@ViewBag.MaxPrice" step="10" class="slider-color" id="id1"></p>
+        </div>
+        <button id="applyFilterButton" class="btn btn-secondary">Apply  Filters</button>
+
+    </div>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 product-card " data-price="@product.Price - (@product.Price * @product.Discount)/100" data-brand-id="@product.BrandId">
+                <div class="card mb-4 ">
+                    <div class="card-body">
+                        <img src="data:image/png;base64,@Convert.ToBase64String(product.CoverImage)" style="max-width: 300px; max-height: 300px;" height="250" width="300" />
+                        <h5 class="card-title">@product.Name</h5>
+
+                        @if (product.Discount > 0)
+                        {
+                            <p class="card-text">
+                                @($"Discount: {product.Discount} % Price: {product.Price - (product.Price * product.Discount) / 100} USD")
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="card-text">@($"Price: {product.Price - (product.Price * product.Discount) / 100} USD")</p>
+                        }
+
+                        <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="btn btn-dark stretched-link">Product Info </a>
+
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+<div class="pagiantion-container">
+    <ul class="pagination justify-content-center">
+
+        @if (ViewBag.Page != 1 && ViewBag.ModelCount != 0)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("GenderView", "Product",
+                new {genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page - 1 ,
+            selectedBrands =ViewBag.SelectedBrands, maxPrice = ViewBag.MaxPrice,   selectedMeasures =ViewBag.SelectedMeasures  })">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="@Url.Action("GenderView", "Product",
+                new {genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page - 1 ,
+                    selectedBrands =ViewBag.SelectedBrands , maxPrice = ViewBag.MaxPrice,
+                    selectedMeasures =ViewBag.SelectedMeasures })">Previous</a>
+            </li>
+        }
+
+
+        @for (int i = 1; i <= ViewBag.PageCount; i++)
+        {
+            <li class="page-item @(ViewBag.Page == i ? "active" : "")">
+                <a class="page-link" href="@Url.Action("GenderView", "Product",
+                new {genderId = ViewBag.GenderId , searchString = ViewBag.SearchString , page = i ,
+                    selectedBrands =ViewBag.SelectedBrands , maxPrice = ViewBag.MaxPrice,
+                    selectedMeasures =ViewBag.SelectedMeasures })">@i</a>
+            </li>
+        }
+
+        @if (ViewBag.Page != ViewBag.PageCount && ViewBag.ModelCount != 0)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("GenderView", "Product",
+                new { genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString,
+                    page = ViewBag.Page + 1 , selectedBrands =ViewBag.SelectedBrands , maxPrice = ViewBag.MaxPrice,
+                    selectedMeasures =ViewBag.SelectedMeasures })">Next</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="@Url.Action("GenderView", "Product",
+                new {genderId = ViewBag.GenderId ,searchString = ViewBag.SearchString, page = ViewBag.Page + 1,
+                    selectedBrands =ViewBag.SelectedBrands , maxPrice = ViewBag.MaxPrice,
+                    selectedMeasures =ViewBag.SelectedMeasures })">Next</a>
+            </li>
+        }
+
+    </ul>
+
+</div>
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/Filters/BrandCheckBox.js"></script>
+<script type="text/javascript">new BrandCheckBox()</script>
+<script src="~/js/Filters/BrandFilterApplied.js"></script>
+<script type="text/javascript">new BrandFilterApplied()</script>
+<script src="~/js/Filters/JavaScript.js"></script>
+<script src="~/js/Filters/PriceRange.js"></script>
+<script src="~/js/Filters/MeasureCheckBox.js"></script>
+<script type="text/javascript">new MeasureCheckBox()</script>

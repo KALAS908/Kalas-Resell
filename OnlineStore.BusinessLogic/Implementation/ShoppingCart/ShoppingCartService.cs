@@ -1,19 +1,14 @@
 ﻿using OnlineStore.BusinessLogic.Base;
 using OnlineStore.Common.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+using OnlineStore.Entities.Entities;
+
 
 namespace OnlineStore.BusinessLogic.Implementation.NewFolder
 {
     public class ShoppingCartService : BaseService
     {
         private readonly CurrentUserDto currentUser;
-       
+
         public ShoppingCartService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
         {
             currentUser = serviceDependencies.CurrentUser;
@@ -31,13 +26,14 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
         public void IncreaseQuantity(Guid productId, string measure)
         {
 
-            var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
-            if(measureId == null)
+            var Measure = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure);
+            var measureId = Measure.Id;
+            if (measure == null)
             {
                 throw new Exception("Measure not found");
             }
             var tem = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
-            if( tem == null)
+            if (tem == null)
             {
                 throw new Exception("Quantity not found");
             }
@@ -54,11 +50,12 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
 
         public void DecreaseQuantity(Guid productId, string measure)
         {
-            var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
-            if (measureId == null)
+            var Measure = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure);
+            if (Measure == null)
             {
                 throw new Exception("Measure not found");
             }
+            var measureId = Measure.Id;
             var tem = UnitOfWork.ShoppingCarts.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId && x.UserId.ToString() == currentUser.Id);
             if (tem == null)
             {
@@ -89,21 +86,55 @@ namespace OnlineStore.BusinessLogic.Implementation.NewFolder
         public void RemoveFromDataBase(Guid productId, string measure, int quantity)
         {
 
-            var measureId = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure).Id;
-            if(measureId == null)
+            var Measure = UnitOfWork.Measures.Get().FirstOrDefault(x => x.MeasureValue == measure);
+            if (Measure == null)
             {
                 throw new Exception("Measure not found");
             }
+            var measureId = Measure.Id;
             var productMeasure = UnitOfWork.ProductMeasures.Get().FirstOrDefault(x => x.ProductId == productId && x.MeasureId == measureId);
-            if(productMeasure == null)
+            if (productMeasure == null)
             {
                 throw new Exception("Product not found");
             }
-           
+
             productMeasure.Quantity -= quantity;
             UnitOfWork.ProductMeasures.Update(productMeasure);
             UnitOfWork.SaveChanges();
 
+        }
+
+        public double GetTotalPrice()
+        {
+            var cart = UnitOfWork.ShoppingCarts.Get().Where(x => x.UserId.ToString() == currentUser.Id);
+            double TotalPrice = 0;
+            foreach (var item in cart)
+            {
+                TotalPrice = (double)(TotalPrice + (item.Quantity * (item.Product.Price - item.Product.Price * item.Product.Discount / 100)));
+            }
+            return TotalPrice;
+        }
+
+        public void AddReceipt(Receipt receipt)
+        {
+            UnitOfWork.Receipts.Insert(receipt);
+            UnitOfWork.SaveChanges();
+        }
+
+        public void AddOrderedItem(OrderedItems orderedItem, int Id)
+        {
+            var exist = UnitOfWork.Orders.Get().FirstOrDefault(x => x.ProductId == orderedItem.ProductId && x.OrderId == Id);
+
+            if (exist != null)
+            {
+                exist.Quantity += orderedItem.Quantity;
+                UnitOfWork.Orders.Update(exist);
+                UnitOfWork.SaveChanges();
+                return;
+            }
+
+            UnitOfWork.Orders.Insert(orderedItem);
+            UnitOfWork.SaveChanges();
         }
     }
 }

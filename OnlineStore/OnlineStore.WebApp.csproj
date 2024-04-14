@@ -6,8 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspose.Imaging" Version="23.8.0" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="C1.Web.Mvc" Version="4.8.20231.347" />
     <PackageReference Include="FluentValidation" Version="11.6.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.6.0" />
@@ -17,6 +19,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="PagedList.Mvc" Version="4.5.0" />
     <PackageReference Include="Polly" Version="7.2.4" />
     <PackageReference Include="Stripe.net" Version="42.1.0" />
   </ItemGroup>
@@ -28,6 +31,8 @@
 
   <ItemGroup>
     <Folder Include="Controllers\NewFolder\" />
+    <Folder Include="Views\AdminViews\" />
+    <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
 </Project>

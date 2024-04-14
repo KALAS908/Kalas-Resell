@@ -7,7 +7,10 @@ using OnlineStore.Code;
 using OnlineStore.Common.DTOs;
 using OnlineStore.WebApp.Code;
 using System.Security.Claims;
- 
+using PagedList;
+using OnlineStore.Entities.Enums;
+using Microsoft.AspNetCore.Authorization;
+
 namespace OnlineStore.WebApp.Controllers
 {
     public class UserAccountController : BaseController
@@ -23,12 +26,43 @@ namespace OnlineStore.WebApp.Controllers
         }
 
 
+        public ViewResult AllUsers(string searchString, int? page)
+        {
+            double pagesize = 15;
+            ViewBag.ModelCount = UserAccountService.GetUserCount(searchString);
+            ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            if (ViewBag.PageCount < page)
+            {
+                ViewBag.page = Convert.ToInt32(ViewBag.PageCount);
+            }
+            else
+            {
+                ViewBag.page = page;
+            }
+
+            if (ViewBag.page == null)
+            {
+                ViewBag.page = 1;
+
+            }
+            ViewBag.SearchString = searchString;
+            ViewBag.PageSize = pagesize;
+
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+            }
+
+            var model = UserAccountService.GetAllUsers(searchString, (int)pagesize, ViewBag.page);
+
+            return View(model);
+        }
+
+
         [HttpGet]
         public IActionResult Register()
         {
             var model = new RegisterModel();
-            //model.CountryList = CountriesService.GetAllCountries();
-           
             return View("Register", model);
         }
 
@@ -39,9 +73,13 @@ namespace OnlineStore.WebApp.Controllers
             {
                 return View("Error_NotFound");
             }
-            //model.CountryList = CountriesService.GetAllCountries();
+
             UserAccountService.RegisterNewUser(model);
 
+            LoginModel loginModel = new LoginModel();
+            loginModel.Email = model.Email;
+            loginModel.Password = model.Password;
+            _ = Login(loginModel);
             return RedirectToAction("Index", "Home");
         }
 
@@ -82,7 +120,9 @@ namespace OnlineStore.WebApp.Controllers
                 new Claim("Id", user.Id.ToString()),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.RoleId.ToString()),
+                new Claim("RoleId", user.RoleId.ToString()),
+                new Claim("IsAdmin", user.IsAdmin.ToString()),
+
             };
 
             var identity = new ClaimsIdentity(claims, "Cookies");
@@ -94,18 +134,18 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Profile(Guid Id)
+        public IActionResult Profile()
         {
-           
-           var model = UserAccountService.GetUserProfile(Id);
+            var Id = new Guid(CurrentUser.Id);
+            var model = UserAccountService.GetUserProfile(Id);
             return View(model);
         }
 
         [HttpGet]
-        public IActionResult EditProfile(Guid Id)
+        public IActionResult EditProfile()
         {
+            var Id = new Guid(CurrentUser.Id);
             var model = UserAccountService.GetUserProfile(Id);
-
             return View(model);
         }
 
@@ -125,11 +165,93 @@ namespace OnlineStore.WebApp.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult WishList()
+        {
+
+            var model = UserAccountService.GetUserWishList();
+            return View(model);
+        }
+
+        public IActionResult DeleteByAdmin(Guid UserId)
+        {
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+            }
+
+            UserAccountService.DeleteUser(UserId);
+            return Ok();
+        }
+
+
+        public IActionResult DeleteAccount()
+        {
+
+            UserAccountService.DeleteAccount();
+            _ = Logout();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult MakeAdmin(Guid UserId)
+        {
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+
+            }
+            UserAccountService.MakeAdmin(UserId);
+            return Ok();
+        }
+        public IActionResult MakeUser(Guid UserId)
+        {
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+
+            }
+            UserAccountService.MakeUser(UserId);
+            return Ok();
+        }
 
         private async Task LogOut()
         {
             await HttpContext.SignOutAsync(scheme: "OnlineStoreCookies");
         }
 
+
+        [HttpGet]
+        public IActionResult Orders()
+        {
+            
+            var model = UserAccountService.GetUserOrders();
+            return View(model);
+        }
+
+        [HttpGet]
+
+        public IActionResult Top10Users()
+        {
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+
+            }
+            var model = UserAccountService.GetTopUsers();
+            return View(model);
+        }
+
+
+
+        [HttpGet]
+        public IActionResult Medals()
+        {
+            if (CurrentUser.RoleId != (int)RolesEnum.Admin)
+            {
+                return View("Error_NotFound");
+
+            }
+            return View();
+        }
     }
 }

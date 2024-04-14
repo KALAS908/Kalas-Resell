@@ -19,7 +19,7 @@ namespace OnlineStore.Common.DTOs
         public int Discount { get; set; }
         public int MeasureId { get; set; }
         public string Color { get; set; }
-
+        public int TypeId { get; set; }
         public byte[] CoverImage { get; set; }
         public List<QuantityMeasureDto> QuantityMeasures { get; set; }
 

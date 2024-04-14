@@ -3,6 +3,8 @@ using OnlineStore.BusinessLogic.Implementation.Account;
 using OnlineStore.BusinessLogic.Implementation.NewFolder;
 using OnlineStore.Code;
 using OnlineStore.Common.DTOs;
+using OnlineStore.DataAccess;
+using OnlineStore.Entities.Entities;
 using OnlineStore.WebApp.Code;
 using Stripe.Checkout;
 
@@ -11,7 +13,7 @@ namespace OnlineStore.WebApp.Controllers
     public class ShoppingCartController : BaseController
     {
         public readonly ShoppingCartService ShoppingCartService;
-        public readonly CurrentUserDto CurrentUser;
+        public new readonly CurrentUserDto CurrentUser;
         public readonly UserAccountService UserAccountService;
         public ShoppingCartController(ControllerDependencies dependencies, ShoppingCartService shoppingCartService, UserAccountService userAccountService) : base(dependencies)
         {
@@ -62,15 +64,29 @@ namespace OnlineStore.WebApp.Controllers
         public IActionResult OrderConfirmation()
         {
             var cart = UserAccountService.GetUserShoppingCart();
+            var receipt = new Receipt();
+            Guid Id = new Guid(CurrentUser.Id);
+            receipt.TotalPrice = ShoppingCartService.GetTotalPrice();
+            receipt.UserId = Id;
+            ShoppingCartService.AddReceipt(receipt);
 
-            foreach(var item in cart)
+
+
+
+            foreach (var item in cart)
             {
+                var OrderedItem = new OrderedItems();
+                OrderedItem.ProductId = item.ProductId;
+                OrderedItem.OrderId = receipt.Id;
+                OrderedItem.Quantity = item.Quantity;
+
+                ShoppingCartService.AddOrderedItem(OrderedItem, receipt.Id);
                 ShoppingCartService.RemoveItem(item.ProductId, item.ProductSize);
                 ShoppingCartService.RemoveFromDataBase(item.ProductId, item.ProductSize, item.Quantity);
-                
+
             }
 
-            return View("OrderConfirmation",cart);
+            return View("OrderConfirmation", cart);
         }
 
         public IActionResult CheckOut()
@@ -93,8 +109,8 @@ namespace OnlineStore.WebApp.Controllers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        
-                        UnitAmount = (long?)(item.ProductPrice - item.ProductPrice*item.ProductDiscount/100) *100 ,
+
+                        UnitAmount = (long?)(item.ProductPrice - item.ProductPrice * item.ProductDiscount / 100) * 100,
                         Currency = "usd",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {

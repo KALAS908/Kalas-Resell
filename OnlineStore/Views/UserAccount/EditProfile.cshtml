@@ -1,54 +1,8 @@
 ﻿@model OnlineStore.BusinessLogic.Implementation.Account.Models.ProfileModel
-
+@inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
 @{
     ViewData["Title"] = "Profile Page";
 }
-
-@*<!DOCTYPE html>
-<html>
-<head>
-    <title>@ViewData["Title"]</title>
-</head>
-<body>
-    <h1>@ViewData["Title"]</h1>
-
-    <form method="post">
-        <div>
-            <label for="UserName">Username:</label>
-            <input type="text" id="UserName" name="UserName" value="@Model.UserName"/>
-        </div>
-        <div>
-            <label for="Email">Email:</label>
-            <input type="email" id="Email" name="Email" value="@Model.Email" />
-        </div>
-        <div>
-            <label for="FirstName">First Name:</label>
-            <input type="text" id="FirstName" name="FirstName" value="@Model.FirstName" />
-        </div>
-        <div>
-            <label for="LastName">Last Name:</label>
-            <input type="text" id="LastName" name="LastName" value="@Model.LastName" />
-        </div>
-        <div class="form-group">
-            <label asp-for="CountryId" class="control-label">Country name</label>
-            <select asp-for="CountryId" class="form-control" id="countryDropdown">
-                <option value=@Model.CountryId selected> @Model.Country</option>
-            </select>
-            <span asp-validation-for="CountryId" class="text-danger"></span>
-        </div>
-        <div>
-            <button type="submit">Save Changes</button>
-        </div>
-    </form>
-</body>
-</html>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="~/js/User/EditCountryList.js"></script>
-<script>
-    var countryId  = @Model.CountryId;
-    new EditCountryList(countryId);
-</script>*@
 <h1>@ViewData["Title"]</h1>
 <div class="row">
     <div class="col-md-4">
@@ -85,7 +39,8 @@
 
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-success" />
+                <a href="@Url.Action("Profile", "UserAccount", new { id = CurrentUser.Id })" class="btn btn-warning">Cancel</a>
             </div>
         </form>
     </div>
@@ -94,7 +49,7 @@
 <script src="~/js/User/EditCountryList.js"></script>
 <script src="~/js/User/CountryList.js"></script>
 <script>
-   
-        new CountryList();
-        
+
+    new CountryList();
+
 </script>

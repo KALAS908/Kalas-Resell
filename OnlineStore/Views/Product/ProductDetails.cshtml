@@ -3,42 +3,11 @@
 @{
     ViewData["Title"] = "View";
 }
-<style>
-
-    .Carousel_description {
-        flex: 0 0 auto; 
-        max-height: 1000px;
-    }
-
-    #Others {
-        flex: 1;
-        text-align: left;
-    }
-
-    #Description {
-        text-align: left;
-    }
-
-    .notification {
-        background-color: #4CAF50;
-        color: white;
-        text-align: center;
-        padding: 10px;
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 9999;
-        transition: opacity 0.5s;
-    }
-
-        .notification.hidden {
-            opacity: 0;
-        }
-
-</style>
+<link rel="stylesheet" href="~/css/ProductDetails/Form.css" />
 <input type="hidden" id="productIdHidden" name="productId" value="@Model.Id" />
 <input type="hidden" id="isUserAuthenticatedHidden" name="isUserAuthenticated" value="@CurrentUser.IsAuthenticated" />
+<input type="hidden" id="typeIdHidden" name="typeId" value="@Model.TypeId" />
+<input type="hidden" id="currentUserIdHidden" name="currentUserId" value="@CurrentUser.Id" />
 <div class="container text-center">
     <div class="row">
         <div id="Carousel_Description" class="col-8">
@@ -64,14 +33,14 @@
                         @if (i == 0)
                         {
                             <div class="carousel-item active" data-bs-interval="2000">
-                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100" width="300" height="500">
+                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block">
                             </div>
                         }
                         else
                         {
 
                             <div class="carousel-item" data-bs-interval="2000">
-                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block w-100" width="300" height="500">
+                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Images[i])" class="d-block">
                             </div>
                         }
                     }
@@ -90,28 +59,91 @@
             <h5>@Model.Name</h5>
             @if (Model.Discount > 0)
             {
-                <p class="card-text">@($"Discount: {Model.Discount} %")</p>
-            }
-            <p class="card-text">@($"{Model.Price - (Model.Price * Model.Discount) / 100} USD")</p>
+                <span>@($"Discount: {Model.Discount} %")</span>
+                <p class="card-text">
 
+                    <span style="text-decoration: line-through;">@($"{Model.Price} USD")</span>
+                    <span class="card-text">@($"{Model.Price - (Model.Price * Model.Discount) / 100} USD") </span>
+                </p>
+            }
+            else
+            {
+                <p class="card-text">@($"{Model.Price} USD")</p>
+            }
             <div class="form-group">
                 <label asp-for="MeasureId" class="control-label">Select Measure</label>
-                <select asp-for="MeasureId" class="form-control" id="productMeasureDropdown">
-                </select>
+                <select asp-for="MeasureId" class="form-control" id="productMeasureDropdown">  </select>
+
                 <span asp-validation-for="MeasureId" class="text-danger"></span>
             </div>
-            <button onclick="AddToCart()" class="btn btn-primary">Add to cart </button>
-            <a href="@Url.Action("ProductDetails", "Product", new { id = Model.Id })" class="btn btn-primary"><i class="bi bi-box2-heart"></i></a>
+            <div>
+                <button onclick="AddToCart()" class="btn btn-secondary"><i class="bi bi-cart-plus"></i></button>
+                <button onclick="AddToWishList()" class="btn btn-secondary"><i class="bi bi-heart"></i></button>
+                @if (CurrentUser.RoleId == 1)
+                {
+                    <button class="open-button btn btn-secondary " onclick="openForm()">Add Stock</button>
+
+                    <div class="form-popup" id="myForm">
+                        <form class="form-container" onsubmit="AddStock(); return false;">
+
+                            <label for="quantity"><b>Quantity</b></label>
+                            <input type="number" placeholder="Enter Quantity" name="quantity" required min="1">
+
+                            <div id="measureFilter">
+                                <h5>Measures</h5>
+                                <select id="measureDropdown" required></select>
+                            </div>
+
+                            <button type="submit" class="btn">Add</button>
+                            <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+                        </form>
+                    </div>
+
+                    <a href="@Url.Action("EditProduct", "Product", new { id = Model.Id })" class="btn btn-secondary">Edit Product</a>
+                }
+            </div>
         </div>
     </div>
     <div class="row" id="Description">
         <h3>Description </h3>
         <p>@Model.Description</p>
     </div>
-    <div id="notification" class="notification hidden">Produsul a fost adăugat în coș!</div>
+    <div id="notification" class="notification hidden"></div>
+    <div class="overlay" id="overlay"></div>
+</div>
+
+<input type="hidden" name="Rating" id="Rating" value="0" />
+@if (CurrentUser.IsAuthenticated)
+{
+    <div class="form-group">
+       
+        <label for="comment-text"><b>Add a comment:</b></label>
+        <textarea id="comment-text" class="form-control" required></textarea>
+        <div class="col-md-7">
+            <div onmouseout="CRateSelected()">
+                <span class="starFade" id="Rate1" onclick="CRate(1)" onmouseover="CRateOver(1)" onmouseout="CRateOut(1)"> </span>
+                <span class="starFade" id="Rate2" onclick="CRate(2)" onmouseover="CRateOver(2)" onmouseout="CRateOut(2)"> </span>
+                <span class="starFade" id="Rate3" onclick="CRate(3)" onmouseover="CRateOver(3)" onmouseout="CRateOut(3)"></span>
+                <span class="starFade" id="Rate4" onclick="CRate(4)" onmouseover="CRateOver(4)" onmouseout="CRateOut(4)"> </span>
+                <span class="starFade" id="Rate5" onclick="CRate(5)" onmouseover="CRateOver(5)" onmouseout="CRateOut(5)"></span>
+            </div>
+        </div>
+    </div>
+    <button id="add-comment-btn" class="btn btn-secondary">Post Comment</button>
+}
+
+<div id="comments-container">
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/js/ProductDetails/ProductMeasuresList.js"></script>
 <script type="text/javascript">new ProductMeasuresList()</script>
 <script src="~/js/ProductDetails/AddToCart.js"></script>
+<script src="~/js/ProductDetails/AddToWishList.js"></script>
+<script src="~/js/ProductDetails/ModalView.js"></script>
+<script src="~/js/ProductDetails/MeasureList.js"></script>
+<script type="text/javascript">new MeasureList()</script>
+<script src="~/js/ProductDetails/AddStock.js"></script>
+<script src="~/js/ProductDetails/Comment.js"></script>
+<script src="~/js/ProductDetails/StarRatings.js"></script>

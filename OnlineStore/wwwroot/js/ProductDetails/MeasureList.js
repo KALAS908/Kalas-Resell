@@ -1,7 +1,6 @@
 ﻿function MeasureList() {
     $(document).ready(function () {
-
-        function getMeasurList(typeId) {
+        function getMeasureList(typeId) {
             $.ajax({
                 url: '/Measure/GetMeasures',
                 type: 'GET',
@@ -22,9 +21,8 @@
 
         function loadMeasures() {
             var typeId = $('#typeIdHidden').val();
-            getMeasurList(typeId);
+            getMeasureList(typeId);
         }
-
 
         loadMeasures();
     });

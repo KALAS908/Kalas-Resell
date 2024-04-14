@@ -1,0 +1,126 @@
+﻿.Carousel_description {
+    flex: 0 0 auto;
+    max-height: 1000px;
+}
+
+#Others {
+    flex: 1;
+    text-align: left;
+}
+
+#Description {
+    text-align: left;
+}
+
+.notification {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    transition: opacity 0.5s;
+}
+
+    .notification.hidden {
+        opacity: 0;
+    }
+
+.carousel-item img {
+    margin-left: auto;
+    margin-right: auto;
+    width: 20vw;
+    height: 50vh;
+    object-fit: contain;
+    position: center;
+}
+
+#measureList {
+    list-style: none;
+    padding: 0;
+}
+
+    #measureList li {
+        margin-bottom: 5px;
+    }
+
+    #measureList input[type="checkbox"] {
+        margin-right: 5px;
+    }
+
+    #measureList label {
+        display: inline-block;
+    }
+
+#measureList {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+
+
+.form-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f1f1f1;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    z-index: 999;
+}
+
+
+.form-container button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+    
+    .form-container button.cancel {
+        background-color: #f44336;
+    }
+
+
+.form-container label {
+    font-weight: bold;
+}
+
+#measureDropdown {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+.form-container input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 998; 
+}

@@ -8,11 +8,8 @@
                 var dropdown = $('#countryDropdown');
                 dropdown.empty();
 
-
-                // Adăugați opțiunea implicită
                 dropdown.append($('<option>').val('').text('Select a country'));
 
-                // Adăugați opțiunile pentru țări
                 $.each(data, (index, country) => {
                     dropdown.append($('<option>').val(country.id).text(country.name));
                 });

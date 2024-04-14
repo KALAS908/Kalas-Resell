@@ -45,7 +45,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Account.Validations
 
         public bool NotAlreadyExistEmail(string email)
         {
-            var user = unitOfWork.Users.Get().FirstOrDefault(u => u.Email == email && u.Id.ToString() != currentUser.Id );
+            var user = unitOfWork.Users.Get().FirstOrDefault(u => u.Email == email);
             if (user != null)
             {
                 return false;

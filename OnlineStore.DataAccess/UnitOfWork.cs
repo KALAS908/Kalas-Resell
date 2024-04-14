@@ -7,7 +7,7 @@ using Type = OnlineStore.Entities.Entities.Type;
 
 namespace OnlineStore.DataAccess
 {
-    public class UnitOfWork  
+    public class UnitOfWork
     {
         private readonly StoreDataBaseContext Context;
 
@@ -37,7 +37,7 @@ namespace OnlineStore.DataAccess
         public IRepository<Color> colors;
         public IRepository<Color> Colors => colors ??= new BaseRepository<Color>(Context);
 
-        public IRepository<Country> countries ;
+        public IRepository<Country> countries;
         public IRepository<Country> Countries => countries ??= new BaseRepository<Country>(Context);
 
         public IRepository<Goods> goods;
@@ -45,9 +45,6 @@ namespace OnlineStore.DataAccess
 
         public IRepository<Gender> genders;
         public IRepository<Gender> Genders => genders ??= new BaseRepository<Gender>(Context);
-
-        public IRepository<Provider> providers;
-        public IRepository<Provider> Providers => providers ??= new BaseRepository<Provider>(Context);
 
         public IRepository<Receipt> receipts;
         public IRepository<Receipt> Receipts => receipts ??= new BaseRepository<Receipt>(Context);
@@ -72,6 +69,15 @@ namespace OnlineStore.DataAccess
 
         public IRepository<ProductMeasure> productMeasures;
         public IRepository<ProductMeasure> ProductMeasures => productMeasures ??= new BaseRepository<ProductMeasure>(Context);
+
+        public IRepository<OrderedItems> orders;
+        public IRepository<OrderedItems> Orders => orders ??= new BaseRepository<OrderedItems>(Context);
+
+        public IRepository<Comment> comments;
+        public IRepository<Comment> Comments => comments ??= new BaseRepository<Comment>(Context);
+
+        public IRepository<ProductView> productview;
+        public IRepository<ProductView> ProductView => productview ??= new BaseRepository<ProductView>(Context);
 
         public void SaveChanges()
         {

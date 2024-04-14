@@ -20,8 +20,10 @@ namespace OnlineStore.Common.DTOs
         public string LastName { get; set; }
         public bool IsAuthenticated { get; set; }
         public string UserName { get; set; }
-        public string RoleId { get; set; }
+        public int RoleId { get; set; }
         public string CountryId { get; set; }
+        public bool IsAdmin { get; set; }
+
 
     }
 }

@@ -4,12 +4,14 @@ table {
     border-collapse: collapse;
     margin-bottom: 20px;
 }
+
 th {
     background-color: #f2f2f2;
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
 }
+
 td {
     border: 1px solid #ddd;
     padding: 8px;
@@ -22,3 +24,50 @@ td {
     border: none;
 }
 
+.notification {
+    background-color: red;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    transition: opacity 0.5s;
+}
+
+    .notification.hidden {
+        opacity: 0;
+    }
+
+img {
+    width: 5vw;
+    height: 3vw;
+    object-fit: contain;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.remove-button {
+    width: 2vw;
+    height: 2vw;
+    background-color: red;
+    color: white;
+    border: none;
+}
+
+.shopImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.footer {
+    background-color: white;
+    text-align: center;
+    padding: 10px;
+    bottom: 0;
+    height: auto;
+    position: relative;
+}

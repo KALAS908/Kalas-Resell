@@ -20,15 +20,15 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[BrandCategory]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Category]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[Color]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Comment]",
          "ObjectType": 0
       },
       {
@@ -64,10 +64,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Provider]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Receipt]",
          "ObjectType": 0
       },
@@ -94,6 +90,14 @@
       {
          "Name": "[dbo].[WishList]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ProductMeasureView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ProductView]",
+         "ObjectType": 3
       }
    ],
    "UiHint": "thaulica.StoreDataBase.dbo",

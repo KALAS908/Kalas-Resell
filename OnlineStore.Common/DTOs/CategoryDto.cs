@@ -10,5 +10,8 @@ namespace OnlineStore.Common.DTOs
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int GenderId { get; set; }
+        public int TypeId { get; set; }
+
     }
 }

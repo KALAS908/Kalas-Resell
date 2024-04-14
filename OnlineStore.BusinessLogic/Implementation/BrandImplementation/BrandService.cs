@@ -1,14 +1,6 @@
 ﻿using OnlineStore.BusinessLogic.Base;
 using OnlineStore.DataAccess;
 using OnlineStore.Entities.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using OnlineStore.BusinessLogic.Implementation.Products.Models;
-using OnlineStore.DataAccess.EntityFramework.Context;
 using OnlineStore.Common.DTOs;
 
 namespace OnlineStore.BusinessLogic.Implementation.BrandImplementation

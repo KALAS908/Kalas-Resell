@@ -31,6 +31,23 @@ namespace OnlineStore.BusinessLogic.Implementation.MeasureImplementation
             return measuresDto;
         }
 
+        public List<MeasureDto> GetAllMeasures()
+        {
+            var measures = UnitOfWork.Measures.Get().ToList();
+            List<MeasureDto> measuresDto = new List<MeasureDto>();
+
+            foreach (var measure in measures)
+            {
+                var measureDto = new MeasureDto
+                {
+                    Id = measure.Id,
+                    Name = measure.MeasureValue
+                };
+                measuresDto.Add(measureDto);
+            }
+            return measuresDto;
+        }
+
         public List<QuantityMeasureDto> GetProductMeasures(Guid productId)
         {
 

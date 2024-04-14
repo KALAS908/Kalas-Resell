@@ -21,6 +21,11 @@ namespace OnlineStore.WebApp.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetAllMeasures()
+        {
+            return Json(MeasureService.GetAllMeasures());
+        }
+        [HttpGet]
         public IActionResult GetProductMeasures(Guid productId)
         {
             var productMeasures = MeasureService.GetProductMeasures(productId);
