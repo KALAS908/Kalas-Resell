@@ -22,6 +22,8 @@
         function loadMeasures() {
             var typeId = $('#typeIdHidden').val();
             getMeasureList(typeId);
+            var exe = 1;
+
         }
 
         loadMeasures();

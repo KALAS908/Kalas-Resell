@@ -38,23 +38,19 @@ namespace OnlineStore.BusinessLogic.Implementation.Account
 
             var user = UnitOfWork.Users.Get().
                 FirstOrDefault(u => u.Email == email);
-            password = StringToHash(password);
-            var randomString = UnitOfWork.UsersStrings.Get().
-                FirstOrDefault(u => u.UserId == user.Id);
-            var hashedPasswordInput = StringToHash(password + randomString.RandomString);
-
-
             if (user == null)
             {
                 return new CurrentUserDto { IsAuthenticated = false };
             }
+            password = StringToHash(password);
+            var randomString = UnitOfWork.UsersStrings.Get().
+                FirstOrDefault(u => u.UserId == user.Id);
 
+            var hashedPasswordInput = StringToHash(password + randomString.RandomString);
             if (user.Password != hashedPasswordInput)
             {
                 return new CurrentUserDto { IsAuthenticated = false };
             }
-
-
 
             var CurrentUser = new CurrentUserDto
             {

@@ -1,0 +1,27 @@
+﻿.content-container {
+    height: 90%;
+}
+
+
+/* Custom Pagination Styles */
+
+
+.page-item:not(.disabled) .page-link {
+    background-color: #555; /* Darker button background color */
+    color: #fff; /* Text color for active and clickable pages */
+}
+
+.page-item.active .page-link {
+    border-color: #555; /* Add a grey right border */
+    background-color: #777; /* Background color for the active page */
+}
+
+.page-item.disabled .page-link {
+    background-color: #444; /* Background color for disabled pages */
+    color: #888; /* Text color for disabled pages */
+}
+
+.page-link:hover {
+    background-color: #777; /* Background color on hover */
+    color: #fff; /* Text color on hover */
+}

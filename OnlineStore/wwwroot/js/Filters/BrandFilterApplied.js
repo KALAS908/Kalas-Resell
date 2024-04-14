@@ -23,6 +23,7 @@
     function redirectToShoesView(genderId, searchString, page, selectedBrands, maxPrice, selectedMeasures) {
 
         var url = window.location.pathname;
+        page = 1;
         url = url + '?&genderId=' + genderId + '&searchString=' + searchString
             + '&page=' + page + '&selectedBrands=' + selectedBrands
             + '&maxPrice=' + maxPrice + '&selectedMeasures=' + selectedMeasures;

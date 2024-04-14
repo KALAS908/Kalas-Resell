@@ -155,6 +155,7 @@ namespace OnlineStore.WebApp.Controllers
         {
             var Id = new Guid(CurrentUser.Id);
             var model = UserAccountService.GetUserProfile(Id);
+            ViewBag.CountryId = model.CountryId;
             return View(model);
         }
 

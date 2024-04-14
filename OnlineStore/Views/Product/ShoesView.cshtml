@@ -15,31 +15,7 @@
 
 
 <link rel="stylesheet" href="~/css/Filters/Filters.css" />
-
-<style>
-
-    .content-container {
-        height: 75%;
-    }
-
-    .pagination-container {
-        bottom: 0;
-        width: 100%;
-        background-color: #f9f9f9;
-    }
-
-    .card-body img {
-        width: 15vw;
-        height: 20vh;
-        object-fit: contain;
-    }
-
-    .page-link {
-        color: white;
-        background-color: darkslategray;
-    }
-
-</style>
+<link rel="stylesheet" href="~/css/Products/Pagination.css" />
 @using (Html.BeginForm("ShoesView", "Product", new { genderId = ViewBag.GenderId }, FormMethod.Get))
 {
     <div>

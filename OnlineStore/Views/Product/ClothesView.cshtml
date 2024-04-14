@@ -15,28 +15,8 @@
 
 
 <link rel="stylesheet" href="~/css/Filters/Filters.css" />
+<link rel="stylesheet" href="~/css/Products/Pagination.css" />
 
-<style>
-
-    
-    .pagination-container {
-        bottom: 0;
-        width: 100%;
-        background-color: #f9f9f9;
-    }
-
-    .card-body img {
-        width: 15vw;
-        height: 20vh;
-        object-fit: contain;
-    }
-
-    .page-link {
-        background-color: darkslategray;
-        border-color: darkslategray;
-        border: none;
-    }
-</style>
 @using (Html.BeginForm("ClothesView", "Product", new { genderId = ViewBag.GenderId }, FormMethod.Get))
 {
     <div>
@@ -56,6 +36,7 @@
     <input type="hidden" id="pageHidden" name="page" value="@ViewBag.Page" />
     <input type="hidden" id="selectedBrandsHidden" name="selectedBrands" value="@ViewBag.SelectedBrands" />
     <input type="hidden" id="selectedMeasuresHidden" name="selectedMeasures" value="@ViewBag.SelectedMeasures" />
+    <input type="hidden" id="typeIdHidden" name="typeId" value="2" />
     <div class="filter-container">
 
         <div id="brandFilter">

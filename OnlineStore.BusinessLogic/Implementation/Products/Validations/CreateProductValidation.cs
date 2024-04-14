@@ -13,7 +13,7 @@ namespace OnlineStore.BusinessLogic.Implementation.Products.Validations
 {
     public class CreateProductValidation : AbstractValidator<ProductCreateModel>
     {
-        private readonly List<string> _validImageExtensions = new List<string> { ".jpg", ".png", ".gif", ".jpeg" , ".jfif"};
+        private readonly List<string> _validImageExtensions = new List<string> { ".jpg", ".png", ".gif", ".jpeg", ".jfif", ".webp" };
         private readonly UnitOfWork unitOfWork;
 
         public CreateProductValidation(UnitOfWork unitOfWork)

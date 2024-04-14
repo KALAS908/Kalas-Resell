@@ -102,7 +102,7 @@ namespace OnlineStore.WebApp.Controllers
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.ModelCount = ProductService.GetClothesCount(searchString, genderId, brandsId, maxPrice, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
-            if(ViewBag.PageCount < page)
+            if (ViewBag.PageCount < page && ViewBag.PageCount != 0)
             {
                 ViewBag.page = Convert.ToInt32(ViewBag.PageCount);
             }

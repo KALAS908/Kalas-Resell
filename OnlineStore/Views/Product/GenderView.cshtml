@@ -15,7 +15,7 @@
 
 
 <link rel="stylesheet" href="~/css/Filters/Filters.css" />
-
+<link rel="stylesheet" href="~/css/Products/Pagination.css" />
 @using (Html.BeginForm("GenderView", "Product", new { genderId = ViewBag.GenderId }, FormMethod.Get))
 {
     <div>
@@ -150,5 +150,5 @@
 <script type="text/javascript">new BrandFilterApplied()</script>
 <script src="~/js/Filters/JavaScript.js"></script>
 <script src="~/js/Filters/PriceRange.js"></script>
-<script src="~/js/Filters/MeasureCheckBox.js"></script>
-<script type="text/javascript">new MeasureCheckBox()</script>
+<script src="~/js/Filters/MeasureForGender.js"></script>
+<script type="text/javascript">new MeasureForGender()</script>

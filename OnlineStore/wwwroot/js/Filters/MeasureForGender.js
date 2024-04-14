@@ -1,12 +1,8 @@
-﻿function MeasureCheckBox() {
+﻿function MeasureForGender() {
     $(document).ready(function () {
-
-        var typeId = $('#typeIdHidden').val();
-        console.log(typeId);
         $.ajax({
-            url: '/Measure/GetMeasures',
+            url: '/Measure/GetAllMeasures',
             type: 'GET',
-            data: { typeId: typeId },
             dataType: 'json',
             success: function (data) {
                 var brandList = $('#measureList');

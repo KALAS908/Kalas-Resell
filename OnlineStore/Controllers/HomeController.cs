@@ -38,7 +38,7 @@ namespace OnlineStore.Controllers
         public  IActionResult Index()
         {
             
-            var model = _productService.GetAllProducts();
+            var model = _productService.GetTopDeals();
             return View("Index", model);
         }
 

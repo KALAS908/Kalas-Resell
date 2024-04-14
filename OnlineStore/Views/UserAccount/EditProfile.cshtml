@@ -2,8 +2,11 @@
 @inject OnlineStore.Common.DTOs.CurrentUserDto CurrentUser
 @{
     ViewData["Title"] = "Profile Page";
+    ViewBag.CountryId = Convert.ToInt32(ViewBag.CountryId);
+
 }
 <h1>@ViewData["Title"]</h1>
+<input type="hidden" id="countryIdHidden" name="countryId" value="@ViewBag.CountryId" />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="EditProfile" asp-controller="UserAccount">
@@ -32,8 +35,7 @@
 
             <div class="form-group">
                 <label asp-for="CountryId" class="control-label">Country name</label>
-                <select asp-for="CountryId" class="form-control" id="countryDropdown">
-                </select>
+                <select asp-for="CountryId" class="form-control" id="countryDropdown"></select>
                 <span asp-validation-for="CountryId" class="text-danger"></span>
             </div>
 
@@ -47,9 +49,7 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/js/User/EditCountryList.js"></script>
-<script src="~/js/User/CountryList.js"></script>
-<script>
+<script src="~/js/User/CountryForEdit.js"></script>
+<script>new CountryForEdit();</script>
 
-    new CountryList();
 
-</script>
