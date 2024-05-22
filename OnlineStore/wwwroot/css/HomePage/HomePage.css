@@ -1,0 +1,137 @@
+﻿
+.featured-products {
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+}
+
+    .featured-products h2 {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2em;
+    }
+
+.product-card {
+    margin-bottom: 30px;
+}
+
+    .product-card .card {
+        border: none;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .product-card .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    .product-card .card-body {
+        padding: 15px;
+        text-align: center;
+        flex-grow: 1;
+    }
+
+    .product-card .card-title {
+        margin: 15px 0;
+        font-size: 1.2em;
+    }
+
+    .product-card .card-text {
+        font-size: 1em;
+        color: #555;
+    }
+
+    .product-card .btn {
+        background-color: #000;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .product-card .btn:hover {
+            background-color: #444;
+        }
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: black; /* Make the icons black */
+    padding: 10px;
+    border-radius: 50%;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.social-media {
+    margin-top: 10px;
+}
+
+    .social-media a {
+        color: white;
+        font-size: 20px;
+        margin: 0 10px;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+        .social-media a:hover {
+            color: #ddd;
+        }
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .product-card {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        width: 100%;
+    }
+}
+.card-body img {
+    width: 15vw;
+    height: 20vh;
+    object-fit: contain;
+}
+
+.carousel-link {
+    display: block;
+    position: relative;
+}
+
+    .carousel-link .carousel-item {
+        position: relative;
+    }
+
+    .carousel-link .carousel-caption {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+

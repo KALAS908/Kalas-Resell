@@ -184,6 +184,7 @@ namespace OnlineStore.WebApp.Controllers
             ViewBag.CategoryId = categoryId;
             ViewBag.ModelCount = ProductService.GetCategoryCount(searchString, categoryId, brandsId, maxPrice, measuresId);
             ViewBag.PageCount = Math.Ceiling(ViewBag.ModelCount / pagesize);
+            ViewBag.TypeId = ProductService.GetTypeId(categoryId);
             if (ViewBag.PageCount < page)
             {
                 ViewBag.page = Convert.ToInt32(ViewBag.PageCount);

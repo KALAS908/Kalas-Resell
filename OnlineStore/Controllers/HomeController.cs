@@ -35,11 +35,15 @@ namespace OnlineStore.Controllers
 
         }
 
-        public  IActionResult Index()
+        public IActionResult Index()
         {
-            
-            var model = _productService.GetTopDeals();
-            return View("Index", model);
+            var topDeals = _productService.GetTopDeals();
+            var topProducts = _productService.GetTopSoldItems();
+
+            ViewBag.TopDeals = topDeals;
+            ViewBag.TopProducts = topProducts;
+
+            return View("HomePage");
         }
 
         public ActionResult RenderMenu()

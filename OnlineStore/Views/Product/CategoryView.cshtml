@@ -10,6 +10,7 @@
     ViewBag.SelectedBrands = ViewBag.SelectedBrands;
     ViewBag.CategoryId = Convert.ToInt32(ViewBag.CategoryId);
     ViewBag.MaxPrice = Convert.ToInt32(ViewBag.MaxPrice);
+    ViewBag.TypeId = Convert.ToInt32(ViewBag.TypeId);
 }
 
 
@@ -35,7 +36,7 @@
     <input type="hidden" id="pageHidden" name="page" value="@ViewBag.Page" />
     <input type="hidden" id="selectedBrandsHidden" name="selectedBrands" value="@ViewBag.SelectedBrands" />
     <input type="hidden" id="selectedMeasuresHidden" name="selectedMeasures" value="@ViewBag.SelectedMeasures" />
-    <input type="hidden" id="typeIdHidden" name="typeId" value="1" />
+    <input type="hidden" id="typeIdHidden" name="typeId" value="@ViewBag.TypeId" />
     <div class="filter-container">
 
         <div id="brandFilter">

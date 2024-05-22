@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> 
+    <link rel="stylesheet" href="/css/HomePage/HomePage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+        <div id="homepageCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="/Images/mens.webp" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1>Mens</h1>
+                        <p>Find the latest trends in fashion and footwear.</p>
+                    <a href="@Url.Action("GenderView", "Product", new { genderId = 1 })" class="btn btn-dark" > Shop Now</a>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="/Images/womens.webp" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1>Women</h1>
+                        <p>Find the latest trends in fashion and footwear</p>
+                    <a href="@Url.Action("GenderView", "Product", new { genderId = 1 })" class="btn btn-dark"> Shop Now</a>
+                    </div>
+                </div>
+                
+            </div>
+            <a class="carousel-control-prev" href="#homepageCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#homepageCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+   
+
+    <section class="featured-products">
+        <h2>Best Selling Products</h2>
+        <div id="bestSellingCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                @foreach (var product in ViewBag.TopProducts)
+                {
+                    <div class="carousel-item @(product == ViewBag.TopProducts[0] ? "active" : "")">
+                        <div class="d-flex justify-content-center">
+                            <div class="col-md-4 product-card" data-price="@product.Price - (@product.Price * @product.Discount)/100" data-brand-id="@product.BrandId">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <img src="data:image/png;base64,@Convert.ToBase64String(product.CoverImage)" class="card-img-top" alt="Product Image" />
+                                        <h5 class="card-title">@product.Name</h5>
+                                        @if (product.Discount > 0)
+                                        {
+                                            <p class="card-text">
+                                                @($"Discount: {product.Discount} % Price: {product.Price - (product.Price * product.Discount) / 100} USD")
+                                            </p>
+                                        }
+                                        else
+                                        {
+                                            <p class="card-text">@($"Price: {product.Price - (product.Price * product.Discount) / 100} USD")</p>
+                                        }
+                                        <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="btn btn-dark stretched-link">Product Info</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <a class="carousel-control-prev" href="#bestSellingCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#bestSellingCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="featured-products">
+        <h2>Top Deals</h2>
+        <div id="topDealsCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                @foreach (var product in ViewBag.TopDeals)
+                {
+                    <div class="carousel-item @(product == ViewBag.TopDeals[0] ? "active" : "")">
+                        <div class="d-flex justify-content-center">
+                            <div class="col-md-4 product-card" data-price="@product.Price - (@product.Price * @product.Discount)/100" data-brand-id="@product.BrandId">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <img src="data:image/png;base64,@Convert.ToBase64String(product.CoverImage)" class="card-img-top" alt="Product Image" />
+                                        <h5 class="card-title">@product.Name</h5>
+                                        @if (product.Discount > 0)
+                                        {
+                                            <p class="card-text">
+                                                @($"Discount: {product.Discount} % Price: {product.Price - (product.Price * product.Discount) / 100} USD")
+                                            </p>
+                                        }
+                                        else
+                                        {
+                                            <p class="card-text">@($"Price: {product.Price - (product.Price * product.Discount) / 100} USD")</p>
+                                        }
+                                        <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="btn btn-dark stretched-link">Product Info</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <a class="carousel-control-prev" href="#topDealsCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#topDealsCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>Contact us:OnlineStore908@outlook.com</p>
+        </div>
+    </footer>
+
+    <!-- Include Bootstrap, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="scripts.js"></script>
+
+</html>

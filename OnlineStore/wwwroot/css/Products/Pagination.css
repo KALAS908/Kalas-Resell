@@ -25,3 +25,56 @@
     background-color: #777; /* Background color on hover */
     color: #fff; /* Text color on hover */
 }
+
+
+.product-card {
+    margin-bottom: 30px;
+}
+
+.product-card .card {
+    border: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-card .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.product-card .card-img-top {
+    max-height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+}
+
+.product-card .card-body {
+    padding: 15px;
+    text-align: center;
+}
+
+.product-card .card-title {
+    margin: 15px 0;
+    font-size: 1.2em;
+}
+
+.product-card .card-text {
+    font-size: 1em;
+    color: #555;
+}
+
+.product-card .btn {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.product-card .btn:hover {
+    background-color: #444;
+}

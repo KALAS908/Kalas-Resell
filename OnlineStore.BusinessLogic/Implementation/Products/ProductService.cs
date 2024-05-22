@@ -79,7 +79,6 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                         .Include(x => x.Color)
                         .Include(x => x.Image)
                         .OrderByDescending(x => x.Discount)
-                        .Take(15)
                         .ToList();
 
             var productsDto = new List<ProductDto>();
@@ -698,6 +697,48 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
                 UnitOfWork.SaveChanges();
             }
         }
+
+        public List<ProductDto> GetTopSoldItems()
+            {
+            var products = UnitOfWork.Products
+                .Get()
+                .Include(x => x.Brand)
+                .Include(x => x.Category)
+                .Include(x => x.Color)
+                .Include(x => x.Image)
+                .Include(x => x.ProductMeasure)
+                .Include(x => x.OrderedItems)
+                .OrderByDescending(x => x.OrderedItems.Sum(y => y.Quantity))
+                .Take(5)
+                .ToList();
+
+            var productsDto = new List<ProductDto>();
+
+            foreach (var product in products)
+            {
+
+                var productDto = new ProductDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    BrandId = product.BrandId,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Brand = product.Brand.Name,
+                    Color = product.Color.Name,
+                    Category = product.Category.Name,
+                    CategoryId = product.Category.Id,
+                    Images = product.Image.Select(x => x.Picture).ToList(),
+                    CoverImage = product.Image.FirstOrDefault().Picture,
+                    Discount = product.Discount
+                };
+
+
+
+                productsDto.Add(productDto);
+            }
+            return productsDto;
+        }
         public IEnumerable<ProductRankingDto> GetTopProducts()
         {
 
@@ -735,6 +776,16 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             }
             var vect = Anything.Split(',').Select(int.Parse).ToList();
             return vect;
+        }
+
+
+        public int GetTypeId (int categoryId)
+        {
+            var Type = UnitOfWork.Categories.Get()
+                    .Where(x => x.Id == categoryId)
+                    .Select(x => x.TypeId)
+                    .FirstOrDefault();
+            return Type;
         }
     }
 }
