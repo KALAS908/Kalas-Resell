@@ -148,9 +148,48 @@ namespace OnlineStore.WebApp.Controllers
         }
 
 
+        //public IActionResult CheckOut()
+        //{
+
+        //    var domain = "https://localhost:7108/";
+        //    var options = new SessionCreateOptions
+        //    {
+        //        SuccessUrl = domain + $"ShoppingCart/OrderConfirmation",
+        //        CancelUrl = domain + $"UserAccount/ShoppingCart",
+        //        LineItems = new List<SessionLineItemOptions>(),
+        //        Mode = "payment",
+
+        //    };
+
+        //    var cart = UserAccountService.GetUserShoppingCart();
+        //    foreach (var item in cart)
+        //    {
+        //        var sessionListItem = new SessionLineItemOptions
+        //        {
+        //            PriceData = new SessionLineItemPriceDataOptions
+        //            {
+
+        //                UnitAmount = (long?)(item.ProductPrice - item.ProductPrice * item.ProductDiscount / 100) * 100,
+        //                Currency = "usd",
+        //                ProductData = new SessionLineItemPriceDataProductDataOptions
+        //                {
+        //                    Name = $"{item.ProductName}  {item.ProductSize}"
+
+        //                },
+        //            },
+        //            Quantity = item.Quantity,
+        //        };
+
+        //        options.LineItems.Add(sessionListItem);
+        //    }
+        //    var service = new SessionService();
+        //    Session session = service.Create(options);
+
+        //    Response.Headers.Add("Location", session.Url);
+        //    return new StatusCodeResult(303);
+        //}
         public IActionResult CheckOut()
         {
-
             var domain = "https://localhost:7108/";
             var options = new SessionCreateOptions
             {
@@ -158,7 +197,13 @@ namespace OnlineStore.WebApp.Controllers
                 CancelUrl = domain + $"UserAccount/ShoppingCart",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-
+                ShippingAddressCollection = new SessionShippingAddressCollectionOptions
+                {
+                    AllowedCountries = new List<string>
+            {
+                "US", "CA","RO" // Add other allowed countries as needed
+            }
+                }
             };
 
             var cart = UserAccountService.GetUserShoppingCart();
@@ -168,25 +213,25 @@ namespace OnlineStore.WebApp.Controllers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-
                         UnitAmount = (long?)(item.ProductPrice - item.ProductPrice * item.ProductDiscount / 100) * 100,
                         Currency = "usd",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = $"{item.ProductName}  {item.ProductSize}"
-
-                        },
+                        }
                     },
-                    Quantity = item.Quantity,
+                    Quantity = item.Quantity
                 };
 
                 options.LineItems.Add(sessionListItem);
             }
+
             var service = new SessionService();
             Session session = service.Create(options);
 
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
         }
+
     }
 }

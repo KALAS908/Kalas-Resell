@@ -33,4 +33,4 @@
 <div class="total-price">
     <h3>Total Price: @Model.Sum(x => (x.ProductPrice - (x.ProductPrice * x.ProductDiscount / 100)) * x.Quantity)</h3>
 </div>
-<a href="@Url.Action("Index", "Home")" type="button">Back to Home</a>
+<a href="@Url.Action("Index", "Home")" class="btn btn-dark">Back to Home</a>

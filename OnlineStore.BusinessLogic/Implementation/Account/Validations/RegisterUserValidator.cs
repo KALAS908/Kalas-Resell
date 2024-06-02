@@ -24,28 +24,39 @@ namespace OnlineStore.BusinessLogic.Implementation.Account.Validations
           
             RuleFor(r => r.Email)
                 .NotEmpty().WithMessage("Camp obligatoriu!")
-                .Must(NotAlreadyExistEmail).WithMessage("Acest email exista deja")
-                .EmailAddress(FluentValidation.Validators.EmailValidationMode.AspNetCoreCompatible);
+                .Must(NotAlreadyExistEmail)
+                .WithMessage("Acest email exista deja")
+                .EmailAddress(FluentValidation
+                .Validators
+                .EmailValidationMode
+                .AspNetCoreCompatible);
             RuleFor(r => r.Password)
-                .NotEmpty().WithMessage("Camp obligatoriu!");
+                .NotEmpty()
+                .WithMessage("Camp obligatoriu!");
             RuleFor(r => r.ConfirmPassword)
-                .NotEmpty().WithMessage("Camp obligatoriu!")
-                .Equal(r => r.Password).WithMessage("Parolele nu coincid!");
+                .NotEmpty()
+                .WithMessage("Camp obligatoriu!")
+                .Equal(r => r.Password)
+                .WithMessage("Parolele nu coincid!");
             RuleFor(r => r.FirstName)
-                .NotEmpty().WithMessage("Camp obligatoriu!");
+                .NotEmpty()
+                .WithMessage("Camp obligatoriu!");
             RuleFor(r => r.LastName)
-                .NotEmpty().WithMessage("Camp obligatoriu!");
+                .NotEmpty()
+                .WithMessage("Camp obligatoriu!");
             RuleFor(r => r.UserName)
-                .NotEmpty().WithMessage("Camp obligatoriu!")
-                .Must(NotAlreadyExistUsername).WithMessage("Acest UserName exista deja");
+                .NotEmpty()
+                .WithMessage("Camp obligatoriu!")
+                .Must(NotAlreadyExistUsername)
+                .WithMessage("Acest UserName exista deja");
 
         }
 
-        public List<Country> CountryList { get; } = new List<Country>();
-
         public bool NotAlreadyExistEmail(string email)
         {
-            var user = unitOfWork.Users.Get().FirstOrDefault(u => u.Email == email);
+            var user = unitOfWork.Users
+                .Get()
+                .FirstOrDefault(u => u.Email == email);
             if (user != null)
             {
                 return false;
@@ -55,7 +66,9 @@ namespace OnlineStore.BusinessLogic.Implementation.Account.Validations
 
         public bool NotAlreadyExistUsername(string username)
         {
-            var user = unitOfWork.Users.Get().FirstOrDefault(u => u.UserName == username);
+            var user = unitOfWork.Users
+                .Get()
+                .FirstOrDefault(u => u.UserName == username);
             if (user != null)
             {
                 return false;

@@ -20,7 +20,9 @@
         });
         return selectedMeasures;
     }
-    function redirectToShoesView(genderId, searchString, page, selectedBrands, maxPrice, selectedMeasures) {
+    function redirectToView(genderId,
+        searchString, page, selectedBrands,
+        maxPrice, selectedMeasures) {
 
         var url = window.location.pathname;
         page = 1;
@@ -41,7 +43,8 @@
 
         selectedMeasures = getSelectedMeasures();
         selectedMeasures = selectedMeasures.join(',');
-        redirectToShoesView(genderId, searchString, page, selectedBrands, maxPrice, selectedMeasures);
+        redirectToView(genderId, searchString,
+            page, selectedBrands, maxPrice, selectedMeasures);
     });
 }
 

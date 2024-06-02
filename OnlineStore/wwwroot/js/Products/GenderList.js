@@ -7,7 +7,7 @@
             success: function (data) {
                 var dropdown = $('#genderDropdown');
                 dropdown.empty();
-                dropdown.append($('<option></option>').val('').text('Select Gender'));
+                dropdown.append($('<option></option>').val('0').text('Select Gender'));
                 $.each(data, (index, gender) => {
                     dropdown.append($('<option></option>').val(gender.id).text(gender.name));
                 });

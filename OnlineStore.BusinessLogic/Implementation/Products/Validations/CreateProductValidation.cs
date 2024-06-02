@@ -29,13 +29,21 @@ namespace OnlineStore.BusinessLogic.Implementation.Products.Validations
                 .GreaterThan(0).WithMessage("Price must be greater then zero!")
                 .NotEmpty().WithMessage("Required!");
             RuleFor(p => p.GenderId)
-                .NotEmpty().WithMessage("Required!");
+                 .NotEmpty().WithMessage("Required!");
             RuleFor(p => p.CategoryId)
                 .NotEmpty().WithMessage("Required!");
             RuleFor(p => p.ColorId)
+               .NotEmpty().WithMessage("Required!");
+            RuleFor(p => p.BrandId)
+                .NotEmpty().WithMessage("Required!");
+            RuleFor(p => p.TypeOfClothingId)
                 .NotEmpty().WithMessage("Required!");
             RuleFor(p => p.Images)
-                .Must(IsValidImageExtension).WithMessage("Invalid image extension!");
+                .NotEmpty().WithMessage("Required!");
+            RuleFor(p => p.Images)
+                 .Must(IsValidImageExtension).WithMessage("Invalid image extension");
+
+
 
 
 
@@ -63,8 +71,9 @@ namespace OnlineStore.BusinessLogic.Implementation.Products.Validations
 
         private bool IsValidImageExtension(List<IFormFile> images)
         {
-
-            return images.All(image => _validImageExtensions.Contains(System.IO.Path.GetExtension(image.FileName).ToLower()));
+            if(images != null)
+                return images.All(image => _validImageExtensions.Contains(System.IO.Path.GetExtension(image.FileName).ToLower()));
+            return false;
         }
     }
 }

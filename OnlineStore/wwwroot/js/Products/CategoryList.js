@@ -11,7 +11,7 @@
              
                     var categoryDropdown = $('#categoryDropdown');
                     categoryDropdown.empty();
-                    categoryDropdown.append($('<option></option>').val('').text('Select a category'));
+                    categoryDropdown.append($('<option></option>').val('0').text('Select a category'));
                     $.each(result, function (index, category) {
                         categoryDropdown.append($('<option></option>').val(category.id).text(category.name));
                     });

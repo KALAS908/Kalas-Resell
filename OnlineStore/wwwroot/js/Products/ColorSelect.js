@@ -7,7 +7,7 @@
             success: function (data) {
                 var dropdown = $('#colorMultiSelectDropdown');
                 dropdown.empty();
-                dropdown.append($('<option></option>').val('').text('Select a color'));
+                dropdown.append($('<option></option>').val('0').text('Select a color'));
                 $.each(data, (index, color) => {
                     dropdown.append($('<option></option>').val(color.id).text(color.name));
                 });

@@ -569,9 +569,19 @@ namespace OnlineStore.BusinessLogic.Implementation.Products
             return editProductDto;
         }
 
-
         public void DeleteProduct(Guid id)
         {
+            var orderedItems = UnitOfWork.OrderedProducts.Get().FirstOrDefault(x => x.ProductId == id);
+            if (orderedItems != null)
+            {
+                UnitOfWork.OrderedProducts.Delete(orderedItems);
+                UnitOfWork.SaveChanges();
+            }
+            var productMeasures = UnitOfWork.ProductMeasures.Get().Where(x => x.ProductId == id).ToList();
+            foreach (var productMeasure in productMeasures)
+            {
+                UnitOfWork.ProductMeasures.Delete(productMeasure);
+            }
             var product = UnitOfWork.Products.Get().FirstOrDefault(x => x.Id == id);
             UnitOfWork.Products.Delete(product);
             UnitOfWork.SaveChanges();
